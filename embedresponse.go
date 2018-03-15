@@ -6,20 +6,20 @@ import (
 
 //EmbedResponse ...
 type EmbedResponse struct {
-	chance int
-	url    string
+	Chance int
+	URL    string
 }
 
 //NewEmbedResponse cstor
 func NewEmbedResponse(setChance int, setURL string) *EmbedResponse {
 	e := new(EmbedResponse)
-	e.chance = setChance
-	e.url = setURL
+	e.Chance = setChance
+	e.URL = setURL
 	return e
 }
 
 func (e EmbedResponse) getEmbed() *discordgo.MessageEmbed {
-	return NewEmbed().SetImage(e.url).MessageEmbed
+	return NewEmbed().SetImage(e.URL).MessageEmbed
 }
 
 func (e *EmbedResponse) respond(session *discordgo.Session, message *discordgo.MessageCreate) bool {

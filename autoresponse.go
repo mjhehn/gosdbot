@@ -10,36 +10,36 @@ import (
 
 //AutoResponse stores all elements needed for an Autoresponse
 type AutoResponse struct {
-	trigger        string
-	regex          *regexp.Regexp
-	responses      []*TextResponse
-	embeds         []*EmbedResponse
-	reactions      []*ReactionResponse
-	mentions       []string
-	cleanup        bool
-	userSpecific   []string
-	serverSpecific []string
+	Trigger        string
+	Regex          *regexp.Regexp
+	Responses      []*TextResponse
+	Embeds         []*EmbedResponse
+	Reactions      []*ReactionResponse
+	Mentions       []string
+	Cleanup        bool
+	UserSpecific   []string
+	ServerSpecific []string
 }
 
-//NewAutoResponse build an AutoResponse object, takes arguments for everything and then creates a compiled regex from the trigger
-func NewAutoResponse(trigger string, responses []*TextResponse, embeds []*EmbedResponse, reactions []*ReactionResponse, mentions []string, cleanup bool, userSpecific []string, serverSpecific []string) *AutoResponse {
+//NewAutoResponse build an AutoResponse object, takes arguments for everything and then creates a compiled regex from the Trigger
+func NewAutoResponse(Trigger string, Responses []*TextResponse, Embeds []*EmbedResponse, Reactions []*ReactionResponse, Mentions []string, Cleanup bool, UserSpecific []string, ServerSpecific []string) *AutoResponse {
 	a := new(AutoResponse)
-	a.trigger = trigger
-	a.regex, _ = regexp.Compile(trigger)
-	a.responses = responses
-	a.embeds = embeds
-	a.reactions = reactions
-	a.mentions = mentions
-	a.cleanup = cleanup
-	a.userSpecific = userSpecific
-	a.serverSpecific = serverSpecific
+	a.Trigger = Trigger
+	a.Regex, _ = regexp.Compile(Trigger)
+	a.Responses = Responses
+	a.Embeds = Embeds
+	a.Reactions = Reactions
+	a.Mentions = Mentions
+	a.Cleanup = Cleanup
+	a.UserSpecific = UserSpecific
+	a.ServerSpecific = ServerSpecific
 	return a
 }
 
 //check for a textResponse to make
 func (a *AutoResponse) checkTextResponses(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
-	for _, response := range a.responses {
-		if response != nil && a.regex.MatchString(message.Content) && runIt(response.chance) {
+	for _, response := range a.Responses {
+		if response != nil && a.Regex.MatchString(message.Content) && runIt(response.Chance) {
 			response.respond(session, message)
 			responded <- true
 			return
@@ -48,8 +48,8 @@ func (a *AutoResponse) checkTextResponses(session *discordgo.Session, message *d
 }
 
 func (a *AutoResponse) checkEmbedResponses(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
-	for _, response := range a.embeds {
-		if response != nil && a.regex.MatchString(message.Content) && runIt(response.chance) {
+	for _, response := range a.Embeds {
+		if response != nil && a.Regex.MatchString(message.Content) && runIt(response.Chance) {
 			responded <- response.respond(session, message)
 			return
 		}
@@ -58,8 +58,8 @@ func (a *AutoResponse) checkEmbedResponses(session *discordgo.Session, message *
 
 func (a *AutoResponse) checkReactionResponses(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	//check for an reaction response to make
-	for _, response := range a.reactions {
-		if response != nil && a.regex.MatchString(message.Content) && runIt(response.chance) {
+	for _, response := range a.Reactions {
+		if response != nil && a.Regex.MatchString(message.Content) && runIt(response.Chance) {
 			response.respond(session, message)
 			responded <- true
 			return
@@ -73,4 +73,8 @@ func runIt(chance int) bool {
 		return true
 	}
 	return false
+}
+
+func (a *AutoResponse) updateRegex() {
+	a.Regex, _ = regexp.Compile(a.Trigger)
 }
