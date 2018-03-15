@@ -40,6 +40,18 @@ func NewAutoResponse(Trigger string, Responses []*TextResponse, Embeds []*EmbedR
 func (a *AutoResponse) checkTextResponses(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	for _, response := range a.Responses {
 		if response != nil && a.Regex.MatchString(message.Content) && runIt(response.Chance) {
+			if a.Mentions != nil {
+				allMentions := ""
+				for i := range a.Mentions {
+					if a.Mentions[i] == "self" {
+						allMentions += " " + message.Author.Mention()
+					} else {
+						//otherwise mentions don't work!
+					}
+				}
+				session.ChannelMessageSend(message.ChannelID, allMentions)
+			}
+
 			response.respond(session, message)
 			responded <- true
 			return

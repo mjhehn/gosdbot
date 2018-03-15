@@ -1,17 +1,22 @@
 package main
 
 import (
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/big"
 	"os"
 	"os/signal"
+	"regexp"
+	"strconv"
+	"strings"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-var ars []*AutoResponse = []*AutoResponse{}
+var ars = []*AutoResponse{}
 
 type responder interface {
 	respond(session *discordgo.Session, message *discordgo.MessageCreate) bool
@@ -66,7 +71,48 @@ func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate)
 		go autoresponse.checkEmbedResponses(session, message, responded)
 		go autoresponse.checkReactionResponses(session, message, responded)
 	}
+	go diceRoller(session, message, responded)
 	<-responded //to synchronize back up with the coroutines
+}
+
+func diceRoller(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
+	expr, err := regexp.Compile("^!(ir|r)oll [0-9]{0,3}d[0-9]{1,3}$")
+	check(err)
+	if expr.MatchString(message.Content) {
+		//TODO: get the number and type of dice to roll.
+		roll := strings.Split(message.Content, " ")
+		dice := strings.Split(roll[1], "d") //base case for no specified number of dice to roll
+
+		var numDice int64 = 1
+		if dice[0] != "" {
+			numDice, _ = strconv.ParseInt(dice[0], 10, 64)
+		}
+		numFaces, _ := strconv.ParseInt(dice[1], 10, 64)
+
+		var rollString string
+		var rollTotal int64
+		for i := int64(0); i < numDice; i++ {
+			rolledDie := rollDie(numFaces)
+			rollTotal += rolledDie
+			if len(rollString) > 0 {
+				rollString = rollString + " + " + strconv.FormatInt(rolledDie, 10)
+			} else {
+				rollString = strconv.FormatInt(rolledDie, 10)
+			}
+		}
+
+		individualRolls, err := regexp.MatchString("i", message.Content)
+		check(err)
+		var result string
+		if individualRolls {
+			result = fmt.Sprintf("Rolled %dd%d for %d. (%s)", numDice, numFaces, rollTotal, rollString)
+		} else {
+			result = fmt.Sprintf("Rolled %dd%d for %d.", numDice, numFaces, rollTotal)
+		}
+		session.ChannelMessageSend(message.ChannelID, result)
+		responded <- true
+		return
+	}
 }
 
 func buildResponseList() {
@@ -81,14 +127,10 @@ func buildResponseList() {
 
 func readResponseList() {
 	jsonResponse, err1 := ioutil.ReadFile("responses.json")
-	if err1 != nil {
-		fmt.Println(err1)
-	}
+	check(err1)
 
 	err := json.Unmarshal(jsonResponse, &ars)
-	if err != nil {
-		fmt.Println(err)
-	}
+	check(err)
 
 	for i := range ars {
 		ars[i].updateRegex()
@@ -101,4 +143,16 @@ func writeResponseList() {
 	defer f.Close()
 	f.Write(jsonResponse)
 	f.Sync()
+}
+
+func check(err error) {
+	if err != nil {
+		fmt.Println(err.Error)
+	}
+}
+
+func rollDie(numFaces int64) int64 {
+	rnged, err := rand.Int(rand.Reader, big.NewInt(numFaces))
+	check(err)
+	return rnged.Int64() + 1
 }
