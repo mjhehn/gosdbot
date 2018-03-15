@@ -8,6 +8,10 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+type responder interface {
+	respond(session *discordgo.Session, message *discordgo.MessageCreate) bool
+}
+
 //AutoResponse stores all elements needed for an Autoresponse
 type AutoResponse struct {
 	Trigger        string

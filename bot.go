@@ -1,11 +1,7 @@
 package main
 
 import (
-	"crypto/rand"
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"math/big"
 	"os"
 	"os/signal"
 	"regexp"
@@ -17,10 +13,6 @@ import (
 )
 
 var ars = []*AutoResponse{}
-
-type responder interface {
-	respond(session *discordgo.Session, message *discordgo.MessageCreate) bool
-}
 
 func main() {
 	discord, err := discordgo.New("Bot " + "NDE1NzMxMDQ0MDgwNDE4ODE2.DW6Lpw.LYY0ZKfCKvC3YMJbCe1u0XpIF7M")
@@ -72,6 +64,7 @@ func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate)
 		go autoresponse.checkReactionResponses(session, message, responded)
 	}
 	go diceRoller(session, message, responded)
+	go compliment(session, message, responded)
 	<-responded //to synchronize back up with the coroutines
 }
 
@@ -115,44 +108,17 @@ func diceRoller(session *discordgo.Session, message *discordgo.MessageCreate, re
 	}
 }
 
-func buildResponseList() {
-	//TODO: setup list of autoresponses and how to load them up (json? csv? seperate lists for embeds vs text?)
-	ars = append(ars, NewAutoResponse("[p|P]ing", []*TextResponse{NewTextResponse(1, "pong")}, nil, nil, nil, false, nil, nil))
-	ars = append(ars, NewAutoResponse("[p|P]ling", []*TextResponse{NewTextResponse(1, "pong")}, nil, nil, nil, false, nil, nil))
-	ars = append(ars, NewAutoResponse("[p|P]sing", []*TextResponse{NewTextResponse(1, "pong")}, nil, nil, nil, false, nil, nil))
-
-	ars = append(ars, NewAutoResponse("pong", nil, []*EmbedResponse{NewEmbedResponse(1, "https://starscollideani.files.wordpress.com/2014/08/cirno-bsod.png?w=332&h=199")}, nil, nil, false, nil, nil))
-	ars = append(ars, NewAutoResponse("handholding", nil, nil, []*ReactionResponse{NewReactionResponse(1, []string{"\U0001F1F1", "\U0001F1EA", "\U0001F1FC", "\U0001F1E9"})}, nil, false, nil, nil))
-}
-
-func readResponseList() {
-	jsonResponse, err1 := ioutil.ReadFile("responses.json")
-	check(err1)
-
-	err := json.Unmarshal(jsonResponse, &ars)
+func compliment(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
+	expr, err := regexp.Compile("^!compliment$")
 	check(err)
+	if expr.MatchString(message.Content) {
+		var data map[string]interface{}
+		err2 := getJSON("https://spreadsheets.google.com/feeds/list/1eEa2ra2yHBXVZ_ctH4J15tFSGEu-VTSunsrvaCAV598/od6/public/values?alt=json", &data)
+		check(err2)
+		numOptions := len(data["feed"].(map[string]interface{})["entry"].([]interface{}))
+		selection := rollDie(int64(numOptions))
+		complimentText := (data["feed"].(map[string]interface{})["entry"].([]interface{})[selection].(map[string]interface{})["title"].(map[string]interface{})["$t"])
 
-	for i := range ars {
-		ars[i].updateRegex()
+		session.ChannelMessageSend(message.ChannelID, (message.Author.Mention() + " " + complimentText.(string)))
 	}
-}
-
-func writeResponseList() {
-	jsonResponse, _ := json.Marshal(ars)
-	f, _ := os.Create("responses.json")
-	defer f.Close()
-	f.Write(jsonResponse)
-	f.Sync()
-}
-
-func check(err error) {
-	if err != nil {
-		fmt.Println(err.Error)
-	}
-}
-
-func rollDie(numFaces int64) int64 {
-	rnged, err := rand.Int(rand.Reader, big.NewInt(numFaces))
-	check(err)
-	return rnged.Int64() + 1
 }
