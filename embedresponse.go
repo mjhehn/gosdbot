@@ -1,6 +1,33 @@
 package main
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"github.com/bwmarrin/discordgo"
+)
+
+//EmbedResponse ...
+type EmbedResponse struct {
+	chance int
+	url    string
+}
+
+//NewEmbedResponse cstor
+func NewEmbedResponse(setChance int, setURL string) *EmbedResponse {
+	e := new(EmbedResponse)
+	e.chance = setChance
+	e.url = setURL
+	return e
+}
+
+func (e EmbedResponse) getEmbed() *discordgo.MessageEmbed {
+	return NewEmbed().SetImage(e.url).MessageEmbed
+}
+
+func (e *EmbedResponse) respond(session *discordgo.Session, message *discordgo.MessageCreate) bool {
+	session.ChannelMessageSendEmbed(message.ChannelID, e.getEmbed())
+	return true
+}
+
+//***********************************************************************
 
 //Embed ...
 type Embed struct {
@@ -237,22 +264,4 @@ func (e *Embed) TruncateFooter() *Embed {
 
 func getEmbed(url string) *discordgo.MessageEmbed {
 	return NewEmbed().SetImage(url).MessageEmbed
-}
-
-//EmbedResponse ...
-type EmbedResponse struct {
-	chance int
-	url    string
-}
-
-//NewEmbedResponse cstor
-func NewEmbedResponse(setChance int, setURL string) *EmbedResponse {
-	e := new(EmbedResponse)
-	e.chance = setChance
-	e.url = setURL
-	return e
-}
-
-func (e EmbedResponse) getEmbed() *discordgo.MessageEmbed {
-	return NewEmbed().SetImage(e.url).MessageEmbed
 }
