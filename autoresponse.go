@@ -7,9 +7,16 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+const (
+	textresponse     = 0
+	embedresponse    = 1
+	reactionresponse = 2
+)
+
 //Used to help generalize the code between the embed, text, and reaction responses.
 type responder interface {
 	respond(session *discordgo.Session, message *discordgo.MessageCreate, mentions []string) bool
+	chance() bool
 }
 
 //AutoResponse stores all elements needed for an Autoresponse
@@ -40,77 +47,58 @@ func NewAutoResponse(Trigger string, Responses []*TextResponse, Embeds []*EmbedR
 	return a
 }
 
-//check for a textResponse to push to the guild/channel
-func (a *AutoResponse) checkTextResponses(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
+func (a *AutoResponse) checkResponses(session *discordgo.Session, message *discordgo.MessageCreate, checkType int, responded chan bool) {
 	var selectedResponse responder
+	var responses []responder
+	switch checkType {
+	case 0:
+		for _, r := range a.Responses {
+			responses = append(responses, r)
+		}
+	case 1:
+		for _, r := range a.Embeds {
+			responses = append(responses, r)
+		}
+	case 2:
+		for _, r := range a.Reactions {
+			responses = append(responses, r)
+		}
+	default:
+		for _, r := range a.Responses {
+			responses = append(responses, r)
+		}
+		break
+	}
+
 	//if this is user specific, and the invoker isn't in that list
 	if a.UserSpecific != nil && !in(message.Author.Username, a.UserSpecific) {
 		return
 	}
 
-	if a.Responses != nil && a.Regex.MatchString(message.Content) {
-		for _, response := range a.Responses {
-			if response.chance() {
-				selectedResponse = response
+	if responses != nil && a.Regex.MatchString(message.Content) {
+		for i := range responses {
+			if responses[i].chance() {
+				selectedResponse = responses[i]
 			}
 		}
-		if selectedResponse != nil {
+		if selectedResponse != nil || responses == nil {
 			if a.Cleanup {
 				session.ChannelMessageDelete(message.ChannelID, message.ID)
 			}
+			a.addReactions(session, message)
 			responded <- selectedResponse.respond(session, message, a.Mentions)
 		}
 		return
 	}
 }
 
-func (a *AutoResponse) checkEmbedResponses(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
-	if a.UserSpecific != nil && !in(message.Author.Username, a.UserSpecific) {
-		return
-	}
-
-	var selectedResponse responder
-	if a.Embeds != nil && a.Regex.MatchString(message.Content) {
-		for _, response := range a.Embeds {
-			if response.chance() {
-				selectedResponse = response
-			}
-		}
-		if selectedResponse != nil {
-			if a.Cleanup {
-				session.ChannelMessageDelete(message.ChannelID, message.ID)
-			}
-			if a.Reactions != nil {
-				for _, response := range a.Reactions {
-					if response.chance() {
-						response.respond(session, message, nil)
-					}
-				}
-			}
-
-			responded <- selectedResponse.respond(session, message, a.Mentions)
-		}
-		return
-	}
-}
-
-func (a *AutoResponse) checkReactionResponses(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
-	if a.UserSpecific != nil && !in(message.Author.Username, a.UserSpecific) {
-		return
-	}
-
-	//check for an reaction response to make
-	var selectedResponse responder
-	if a.Reactions != nil && a.Regex.MatchString(message.Content) {
+func (a *AutoResponse) addReactions(session *discordgo.Session, message *discordgo.MessageCreate) {
+	if a.Reactions != nil {
 		for _, response := range a.Reactions {
 			if response.chance() {
-				selectedResponse = response
+				response.respond(session, message, nil)
 			}
 		}
-		if selectedResponse != nil {
-			responded <- selectedResponse.respond(session, message, a.Mentions)
-		}
-		return
 	}
 }
 

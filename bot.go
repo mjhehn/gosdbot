@@ -59,7 +59,7 @@ func main() {
 }
 
 func ready(session *discordgo.Session, message *discordgo.MessageCreate) {
-	session.UpdateStatus(0, "Being a bot")
+	session.UpdateStatus(0, "with 100% Python!")
 }
 
 //called every time a message received in a channel the bot is in
@@ -82,9 +82,9 @@ func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate)
 
 	for _, autoresponse := range config.ars {
 		if autoresponse.ServerSpecific == nil || in(currentServer, autoresponse.ServerSpecific) {
-			go autoresponse.checkTextResponses(session, message, responded)
-			go autoresponse.checkEmbedResponses(session, message, responded)
-			go autoresponse.checkReactionResponses(session, message, responded)
+			go autoresponse.checkResponses(session, message, textresponse, responded)
+			go autoresponse.checkResponses(session, message, embedresponse, responded)
+			go autoresponse.checkResponses(session, message, reactionresponse, responded)
 		}
 	}
 	go notJustTheMen(session, message, responded)
