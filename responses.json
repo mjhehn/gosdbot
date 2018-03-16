@@ -98,6 +98,22 @@
     "ServerSpecific": null
   },
   {
+    "Trigger": "^[mM]arco$",
+    "Regex": {},
+    "Responses": [
+      {
+        "Chance": 1,
+        "Text": "Polo!"
+      }
+    ],
+    "Embeds": null,
+    "Reactions": null,
+    "Mentions": null,
+    "Cleanup": false,
+    "UserSpecific": null,
+    "ServerSpecific": null
+  },
+  {
     "Trigger": "sand",
     "Regex": {},
     "Responses":[
