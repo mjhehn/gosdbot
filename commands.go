@@ -1,3 +1,4 @@
+//responders with !word triggers
 package main
 
 import (
@@ -9,6 +10,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+//rolls a variable number and type of dice. same format of parameters as other responders.
 func diceRoller(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!(ir|r)oll [0-9]{0,3}d[0-9]{1,3}$")
 	check(err)
@@ -18,7 +20,7 @@ func diceRoller(session *discordgo.Session, message *discordgo.MessageCreate, re
 		dice := strings.Split(roll[1], "d") //base case for no specified number of dice to roll
 
 		var numDice int64 = 1
-		if dice[0] != "" {
+		if dice[0] != "" { //basically, if a number of dice is specified
 			numDice, _ = strconv.ParseInt(dice[0], 10, 64)
 		}
 		numFaces, _ := strconv.ParseInt(dice[1], 10, 64)
@@ -35,7 +37,7 @@ func diceRoller(session *discordgo.Session, message *discordgo.MessageCreate, re
 			}
 		}
 
-		individualRolls, err := regexp.MatchString("i", message.Content)
+		individualRolls, err := regexp.MatchString("i", message.Content) //iroll #d# to show the results of every roll
 		check(err)
 		var result string
 		if individualRolls {
@@ -49,6 +51,7 @@ func diceRoller(session *discordgo.Session, message *discordgo.MessageCreate, re
 	}
 }
 
+//pulls a 'compliment' from a json list found online from emergencycompliment.com and displays it
 func compliment(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!compliment$")
 	check(err)
@@ -56,7 +59,7 @@ func compliment(session *discordgo.Session, message *discordgo.MessageCreate, re
 		var data map[string]interface{}
 		err2 := getJSON("https://spreadsheets.google.com/feeds/list/1eEa2ra2yHBXVZ_ctH4J15tFSGEu-VTSunsrvaCAV598/od6/public/values?alt=json", &data)
 		check(err2)
-		numOptions := len(data["feed"].(map[string]interface{})["entry"].([]interface{}))
+		numOptions := len(data["feed"].(map[string]interface{})["entry"].([]interface{})) //get the list of possible 'compliments
 		selection := rollDie(int64(numOptions))
 
 		//aaaaand the following line makes me feel sick.
@@ -66,6 +69,7 @@ func compliment(session *discordgo.Session, message *discordgo.MessageCreate, re
 	}
 }
 
+//removes messages from bots within a range. defaults to 100 messages back to clean
 func cleanup(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!cleanup[ ]{0,1}[0-9]*$")
 	check(err)
@@ -76,16 +80,18 @@ func cleanup(session *discordgo.Session, message *discordgo.MessageCreate, respo
 			numToClean, _ = strconv.ParseInt(stringNum[1], 10, 0)
 		}
 		check(err)
-		numToClean++
-		if numToClean > 100 {
+		numToClean++          //to handle cleaning the invoking command
+		if numToClean > 100 { //handle out of range problems.
 			numToClean = 100
 		} else if numToClean < 0 {
 			numToClean = 0
 		}
-		numCleaned := 0
-		messages, err := session.ChannelMessages(message.ChannelID, int(numToClean), "", "", "")
+
+		numCleaned := 0                                                                          //how many messages get removed/cleaned up
+		messages, err := session.ChannelMessages(message.ChannelID, int(numToClean), "", "", "") //get the list of messages
 		check(err)
-		var stringMessages = []string{message.ID}
+
+		var stringMessages = []string{message.ID} //build a list of message ids to pass to delete
 		for _, message := range messages {
 			if message.Author.Bot {
 				stringMessages = append(stringMessages, message.ID)
@@ -102,6 +108,7 @@ func cleanup(session *discordgo.Session, message *discordgo.MessageCreate, respo
 
 }
 
+//delete a number of messages. same basically as cleanup
 func delete(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!delete [0-9]+$")
 	check(err)
@@ -130,6 +137,7 @@ func delete(session *discordgo.Session, message *discordgo.MessageCreate, respon
 
 }
 
+//add current sever to the muted list, which allows only mute commands to be received or sent.
 func mute(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!mute$")
 	check(err)
@@ -190,6 +198,7 @@ func mutestatus(session *discordgo.Session, message *discordgo.MessageCreate, re
 	return
 }
 
+//prequel meme
 func notJustTheMen(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("[mM]en")
 	check(err)

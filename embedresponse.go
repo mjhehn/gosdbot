@@ -5,7 +5,7 @@ import (
 )
 
 //EmbedResponse ...
-type EmbedResponse struct {
+type EmbedResponse struct { //wrapped for embed objects
 	Chance int
 	URL    string
 }
@@ -18,10 +18,12 @@ func NewEmbedResponse(setChance int, setURL string) *EmbedResponse {
 	return e
 }
 
+//gets the actual object able ot be embedded in a message
 func (e EmbedResponse) getEmbed() *discordgo.MessageEmbed {
 	return NewEmbed().SetImage(e.URL).MessageEmbed
 }
 
+//interface handling to send an embed message
 func (e *EmbedResponse) respond(session *discordgo.Session, message *discordgo.MessageCreate, mentions []string) bool {
 	session.ChannelMessageSendEmbed(message.ChannelID, e.getEmbed())
 	allMentions := ""

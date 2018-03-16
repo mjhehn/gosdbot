@@ -1,5 +1,23 @@
 [
   {
+    "Trigger": "^[A-Z0-9!? ]*$",
+    "Regex": {},
+    "Responses":[
+      {
+        "Chance": 6,
+        "Text": "SSSSSSSSSHHHHHHHHH. Some of us are trying to parse chat messages in here."
+      }
+    ],
+    "Embeds":  null,
+    "Reactions": null,
+    "Mentions": [
+      "self"
+    ],
+    "Cleanup": false,
+    "UserSpecific": null,
+    "ServerSpecific": null
+  },
+  {
     "Trigger": "[gG][gG][eE][zZ][!.]*",
     "Regex": {},
     "Responses":[
@@ -167,6 +185,30 @@
     "ServerSpecific": [
       "The Semi-Decent Establishment",
       "SemiDecentBotTesting"
+    ]
+  },
+  {
+    "Trigger": "lewd",
+    "Regex": {},
+    "Responses":[
+      {
+        "Chance":1,
+        "Text":"LALALALALALALA I'm not listening. I am a PURE and INNOCENT bot."
+      }
+    ],
+    "Embeds":  [
+      {
+        "Chance":1,
+        "URL":"https://cdn.discordapp.com/attachments/168473016760532992/424175376047144961/image.jpg"
+      }
+    ],
+    "Reactions": null,
+    "Mentions": null,
+    "Cleanup": false,
+    "UserSpecific": null,
+    "ServerSpecific": [
+      "SemiDecentBotTesting",
+      "The Semi-Decent Establishment"
     ]
   },
   {
@@ -460,7 +502,12 @@
   {
     "Trigger": "[hH]andholding",
     "Regex": {},
-    "Responses": null,
+    "Responses": [
+      {
+        "Chance": 6,
+        "Text": "Oh you like that don't you, you degenerate."
+      }
+    ],
     "Embeds": null,
     "Reactions": [
       {
@@ -475,7 +522,11 @@
     ],
     "Mentions": null,
     "Cleanup": false,
-    "UserSpecific": null,
-    "ServerSpecific": null
+    "UserSpecific":null,
+    "ServerSpecific": [
+      "The Semi-Decent Establishment",
+      "The Disturbed",
+      "SemiDecentBotTesting"
+    ]
   }
 ]

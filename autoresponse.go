@@ -2,11 +2,13 @@
 package main
 
 import (
+	"fmt"
 	"regexp"
 
 	"github.com/bwmarrin/discordgo"
 )
 
+//help imporve readability of the 'general' response checker method.
 const (
 	textresponse     = 0
 	embedresponse    = 1
@@ -47,19 +49,32 @@ func NewAutoResponse(Trigger string, Responses []*TextResponse, Embeds []*EmbedR
 	return a
 }
 
+//checkResponses acts as a generic checker and applier of responses possible from the autoresponse it is called upon.
+//takes:
+//pointer to the current session
+//pointer to the message created by messagecreate event
+//an integer telling the check whether it's checking through text responses, embedded resposnes, or (emoji) reaction responses (0, 1, 2 respectively)
+//a bool channel to note when a goroutine has made an answer.
 func (a *AutoResponse) checkResponses(session *discordgo.Session, message *discordgo.MessageCreate, checkType int, responded chan bool) {
 	var selectedResponse responder
 	var responses []responder
-	switch checkType {
-	case 0:
+
+	defer func() { //handle failure due to closed channel
+		if r := recover(); r != nil {
+			fmt.Println("Recovered in f", r)
+		}
+	}()
+
+	switch checkType { //switch depending on what type of responses we're checking. integers with constants.
+	case textresponse:
 		for _, r := range a.Responses {
 			responses = append(responses, r)
 		}
-	case 1:
+	case embedresponse:
 		for _, r := range a.Embeds {
 			responses = append(responses, r)
 		}
-	case 2:
+	case reactionresponse:
 		for _, r := range a.Reactions {
 			responses = append(responses, r)
 		}
@@ -70,38 +85,41 @@ func (a *AutoResponse) checkResponses(session *discordgo.Session, message *disco
 		break
 	}
 
-	//if this is user specific, and the invoker isn't in that list
+	//if this is user specific, and the message author isn't in that list
 	if a.UserSpecific != nil && !in(message.Author.Username, a.UserSpecific) {
 		return
 	}
 
-	if responses != nil && a.Regex.MatchString(message.Content) {
+	if responses != nil && a.Regex.MatchString(message.Content) { //check for the trigger, and if there even are responses to make
 		for i := range responses {
-			if responses[i].chance() {
+			if responses[i].chance() { //if rolled successfully to respond with this responses
 				selectedResponse = responses[i]
 			}
 		}
-		if selectedResponse != nil || responses == nil {
-			if a.Cleanup {
+		if selectedResponse != nil { //check that we got a response
+			if a.Cleanup { //check if this response is supposed to delete teh command message
 				session.ChannelMessageDelete(message.ChannelID, message.ID)
 			}
-			a.addReactions(session, message)
-			responded <- selectedResponse.respond(session, message, a.Mentions)
+			a.addReactions(session, message)                                    //add reactions, if any.
+			responded <- selectedResponse.respond(session, message, a.Mentions) //send the message, and push true to the channel
 		}
 		return
 	}
+	return
 }
 
+//addReactions adds relevant reaction items to a message.
 func (a *AutoResponse) addReactions(session *discordgo.Session, message *discordgo.MessageCreate) {
 	if a.Reactions != nil {
 		for _, response := range a.Reactions {
 			if response.chance() {
-				response.respond(session, message, nil)
+				response.respond(session, message, nil) //apply reactions to message
 			}
 		}
 	}
 }
 
+//updateRegex: update the regex field to a compiled expression
 func (a *AutoResponse) updateRegex() {
 	a.Regex, _ = regexp.Compile(a.Trigger)
 }
