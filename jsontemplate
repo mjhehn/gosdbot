@@ -9,3 +9,44 @@
     "UserSpecific": null,
     "ServerSpecific": null
   },
+
+
+  //all possible fields in use (wouldn't really work in practice, but demos all the fields)
+   {
+    "Trigger": "[wW]affles[!?.]*[<3]*",
+    "Regex": {},
+    "Responses":[
+     {
+       "Chance":1,
+       "Text":"Hello World!"
+     },
+     {
+       "Chance":2,
+       "Text":"Goodbye World!"
+     } 
+    ],
+    "Embeds":  [
+      {
+        "Chance":1,
+        "URL":"https://media.giphy.com/media/12XMGIWtrHBl5e/giphy.gif"
+      }
+    ],
+    "Reactions": [
+      {
+        "Chance":1,
+        "Emoji":[
+          "waffles"
+        ]
+      }
+    ],
+    "Mentions": [
+      "self" 
+    ],
+    "Cleanup": false,
+    "UserSpecific": [
+     "Bugs Bunny" 
+    ],
+    "ServerSpecific": [
+      "Looney Toons"
+    ]
+  },
