@@ -1,6 +1,8 @@
 package main
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"github.com/bwmarrin/discordgo"
+)
 
 //ReactionResponse stores the chance a text response will be made and the text itself
 type ReactionResponse struct {
@@ -18,7 +20,12 @@ func NewReactionResponse(setChance int, setText []string) *ReactionResponse {
 
 func (r *ReactionResponse) respond(session *discordgo.Session, message *discordgo.MessageCreate, mentions []string) bool {
 	for _, emoji := range r.Emojis {
-		session.MessageReactionAdd(message.ChannelID, message.ID, emoji)
+		emojiObject := getEmoji(session, message, emoji)
+		if emojiObject != nil {
+			session.MessageReactionAdd(message.ChannelID, message.ID, emojiObject.APIName())
+		} else {
+			session.MessageReactionAdd(message.ChannelID, message.ID, emoji)
+		}
 	}
 	return true
 }

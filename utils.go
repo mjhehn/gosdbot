@@ -128,3 +128,17 @@ func in(s string, list []string) bool {
 	}
 	return false
 }
+
+func getEmoji(session *discordgo.Session, msg *discordgo.MessageCreate, name string) *discordgo.Emoji {
+	guild := getGuild(session, msg)
+	guildEmojis := guild.Emojis
+	if guildEmojis != nil {
+		for _, guildEmoji := range guildEmojis {
+			if guildEmoji.Name == name {
+				return guildEmoji
+			}
+		}
+	}
+
+	return nil
+}

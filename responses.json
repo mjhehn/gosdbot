@@ -130,6 +130,46 @@
     "ServerSpecific": null
   },
   {
+    "Trigger": "[fF]olgers",
+    "Regex": {},
+    "Responses":[
+      { 
+        "Chance":8,
+        "Text":"Folgers - Freshly roasted every day and shipped to you a year later. "
+      },
+      { "Chance":8,"Text":"Folgers - Why drink Maxwell house when you can have the next worst thing? "},
+      { "Chance":8,"Text":"Folgers - Having trouble pooping? Pick up a can of Folgers at your local supermarket. It's cheaper and tastes slightly better than an osmotic laxative! "},
+      { "Chance":8,"Text":"Give me liberty of give me "},
+      { "Chance":8,"Text":"Folgers - We believe that being terrible consistently is better than being good sometimes. "},
+      { "Chance":8,"Text":"Folgers - No amount of cream and sugar will mask our distinctive aftertaste. "},
+      { "Chance":8,"Text":"Folgers - Our patent-pending AromaSeal technology keeps in the wonderful scents of battery acid and rocket fuel. "},
+      { "Chance":8,"Text":"Folgers - For the meager cost of 3 tubes of toothpaste you can buy something that tastes a little better than mouthwash. "},
+      { "Chance":8,"Text":"Folgers - Have you ever wanted Starbucks for 1/6 the price and 1/10 of the taste? We have just the thing. "},
+      { "Chance":8,"Text":"Folgers - Awful now comes in terrible. Pick up a can of Folgers decaf at your local supermarket. "},
+      { "Chance":8,"Text":"Folgers - Our almost decent coffee is now the official drink of the semi-decent establishment!"},
+      { "Chance":8,"Text":"Folgers - If orange is the new black, why can't terrible be the new good? "},
+      { "Chance":8,"Text":"Folgers - Constipated? Have a cup of Folgers and upgrade that to disgustipated. "},
+      { "Chance":8,"Text":"Folgers - All of our coffee starts with the finest quality, 100% arabica beans. Then we add god knows what, roast it, and ship it straight to your hometown. "},
+      { "Chance":8,"Text":"Folgers - Now introducing Folgers Gourmet, the latest addition to our oxymoron line of coffee blends!"}
+    ],
+    "Embeds":  null,
+    "Reactions": [
+      {
+        "Chance": 1,
+        "Emojis": [
+          "folgers"
+        ]
+      }
+    ],
+    "Mentions": null,
+    "Cleanup": false,
+    "UserSpecific": null,
+    "ServerSpecific": [
+      "The Semi-Decent Establishment",
+      "SemiDecentBotTesting"
+    ]
+  },
+  {
     "Trigger": "magedere",
     "Regex": {},
     "Responses":[
