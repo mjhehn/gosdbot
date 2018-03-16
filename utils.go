@@ -9,10 +9,11 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/bwmarrin/discordgo"
 )
 
 func buildResponseList() {
-	//TODO: setup list of autoresponses and how to load them up (json? csv? seperate lists for embeds vs text?)
 	ars = append(ars, NewAutoResponse("[p|P]ing", []*TextResponse{NewTextResponse(1, "pong")}, nil, nil, nil, false, nil, nil))
 	ars = append(ars, NewAutoResponse("[p|P]ling", []*TextResponse{NewTextResponse(1, "pong")}, nil, nil, nil, false, nil, nil))
 	ars = append(ars, NewAutoResponse("[p|P]sing", []*TextResponse{NewTextResponse(1, "pong")}, nil, nil, nil, false, nil, nil))
@@ -43,7 +44,7 @@ func writeResponseList() {
 
 func check(err error) {
 	if err != nil {
-		fmt.Println(err.Error)
+		fmt.Println(err)
 	}
 }
 
@@ -63,4 +64,67 @@ func getJSON(url string, target interface{}) error {
 	defer r.Body.Close()
 
 	return json.NewDecoder(r.Body).Decode(target)
+}
+
+func runIt(chance int) bool {
+	rnged, _ := rand.Int(rand.Reader, big.NewInt(int64(chance)))
+	if rnged.Int64() == int64(0) {
+		return true
+	}
+	return false
+}
+
+func getServer(session *discordgo.Session, msg *discordgo.MessageCreate) string {
+	guild := getGuild(session, msg)
+	if guild != nil {
+		return guild.Name
+	}
+	return ""
+}
+
+func getGuild(session *discordgo.Session, msg *discordgo.MessageCreate) *discordgo.Guild {
+	channel, err := session.State.Channel(msg.ChannelID)
+	if err != nil {
+		channel, err = session.Channel(msg.ChannelID)
+		if err != nil {
+			check(err)
+			return nil
+		}
+	}
+
+	// Attempt to get the guild from the state,
+	// If there is an error, fall back to the restapi.
+	guild, err := session.State.Guild(channel.GuildID)
+	if err != nil {
+		guild, err = session.Guild(channel.GuildID)
+		if err != nil {
+			check(nil)
+			return nil
+		}
+	}
+	return guild
+}
+
+func getRoles(session *discordgo.Session, msg *discordgo.MessageCreate) []string {
+	currentGuild := getGuild(session, msg)
+
+	user, err := session.GuildMember(currentGuild.ID, msg.Author.ID)
+	check(err)
+	userRoles := user.Roles
+	var roleList []string
+	for _, role := range userRoles {
+		roleObject, err := session.State.Role(currentGuild.ID, role)
+		check(err)
+		roleList = append(roleList, roleObject.Name)
+	}
+	return roleList
+}
+
+func in(s string, list []string) bool {
+	for _, item := range list {
+		if s == item {
+			return true
+		}
+	}
+	return false
 }

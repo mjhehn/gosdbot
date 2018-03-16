@@ -1,15 +1,14 @@
 package main
 
 import (
-	"crypto/rand"
-	"math/big"
 	"regexp"
 
 	"github.com/bwmarrin/discordgo"
 )
 
+//TODO: implement cleanup feature
 type responder interface {
-	respond(session *discordgo.Session, message *discordgo.MessageCreate) bool
+	respond(session *discordgo.Session, message *discordgo.MessageCreate, mentions []string) bool
 }
 
 //AutoResponse stores all elements needed for an Autoresponse
@@ -42,53 +41,67 @@ func NewAutoResponse(Trigger string, Responses []*TextResponse, Embeds []*EmbedR
 
 //check for a textResponse to make
 func (a *AutoResponse) checkTextResponses(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
-	for _, response := range a.Responses {
-		if response != nil && a.Regex.MatchString(message.Content) && runIt(response.Chance) {
-			if a.Mentions != nil {
-				allMentions := ""
-				for i := range a.Mentions {
-					if a.Mentions[i] == "self" {
-						allMentions += " " + message.Author.Mention()
-					} else {
-						//otherwise mentions don't work!
-					}
-				}
-				session.ChannelMessageSend(message.ChannelID, allMentions)
-			}
+	var selectedResponse responder
+	if a.UserSpecific != nil && !in(message.Author.Username, a.UserSpecific) {
+		return
+	}
 
-			response.respond(session, message)
-			responded <- true
-			return
+	if a.Responses != nil && a.Regex.MatchString(message.Content) {
+		for _, response := range a.Responses {
+			if response.chance() {
+				selectedResponse = response
+			}
 		}
+		if selectedResponse != nil {
+			if a.Cleanup {
+				session.ChannelMessageDelete(message.ChannelID, message.ID)
+			}
+			responded <- selectedResponse.respond(session, message, a.Mentions)
+		}
+		return
 	}
 }
 
 func (a *AutoResponse) checkEmbedResponses(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
-	for _, response := range a.Embeds {
-		if response != nil && a.Regex.MatchString(message.Content) && runIt(response.Chance) {
-			responded <- response.respond(session, message)
-			return
+	if a.UserSpecific != nil && !in(message.Author.Username, a.UserSpecific) {
+		return
+	}
+
+	var selectedResponse responder
+	if a.Embeds != nil && a.Regex.MatchString(message.Content) {
+		for _, response := range a.Embeds {
+			if response.chance() {
+				selectedResponse = response
+			}
 		}
+		if selectedResponse != nil {
+			if a.Cleanup {
+				session.ChannelMessageDelete(message.ChannelID, message.ID)
+			}
+			responded <- selectedResponse.respond(session, message, a.Mentions)
+		}
+		return
 	}
 }
 
 func (a *AutoResponse) checkReactionResponses(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
-	//check for an reaction response to make
-	for _, response := range a.Reactions {
-		if response != nil && a.Regex.MatchString(message.Content) && runIt(response.Chance) {
-			response.respond(session, message)
-			responded <- true
-			return
-		}
+	if a.UserSpecific != nil && !in(message.Author.Username, a.UserSpecific) {
+		return
 	}
-}
 
-func runIt(chance int) bool {
-	rnged, _ := rand.Int(rand.Reader, big.NewInt(int64(chance)))
-	if rnged.Int64() == int64(0) {
-		return true
+	//check for an reaction response to make
+	var selectedResponse responder
+	if a.Reactions != nil && a.Regex.MatchString(message.Content) {
+		for _, response := range a.Reactions {
+			if response.chance() {
+				selectedResponse = response
+			}
+		}
+		if selectedResponse != nil {
+			responded <- selectedResponse.respond(session, message, a.Mentions)
+		}
+		return
 	}
-	return false
 }
 
 func (a *AutoResponse) updateRegex() {

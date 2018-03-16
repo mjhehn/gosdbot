@@ -16,9 +16,13 @@ func NewReactionResponse(setChance int, setText []string) *ReactionResponse {
 	return e
 }
 
-func (r *ReactionResponse) respond(session *discordgo.Session, message *discordgo.MessageCreate) bool {
+func (r *ReactionResponse) respond(session *discordgo.Session, message *discordgo.MessageCreate, mentions []string) bool {
 	for _, emoji := range r.Emojis {
 		session.MessageReactionAdd(message.ChannelID, message.ID, emoji)
 	}
 	return true
+}
+
+func (r *ReactionResponse) chance() bool {
+	return runIt(r.Chance)
 }

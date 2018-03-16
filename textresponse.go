@@ -16,7 +16,21 @@ func NewTextResponse(setChance int, setText string) *TextResponse {
 	return e
 }
 
-func (t *TextResponse) respond(session *discordgo.Session, message *discordgo.MessageCreate) bool {
-	session.ChannelMessageSend(message.ChannelID, t.Text)
+func (t *TextResponse) respond(session *discordgo.Session, message *discordgo.MessageCreate, mentions []string) bool {
+	allMentions := ""
+	if mentions != nil {
+		for i := range mentions {
+			if mentions[i] == "self" {
+				allMentions += " " + message.Author.Mention()
+			} else {
+				//otherwise mentions don't work! stupid usernames.
+			}
+		}
+	}
+	session.ChannelMessageSend(message.ChannelID, (allMentions + " " + t.Text))
 	return true
+}
+
+func (t *TextResponse) chance() bool {
+	return runIt(t.Chance)
 }

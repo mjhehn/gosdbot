@@ -1,0 +1,11 @@
+  {
+    "Trigger": "",
+    "Regex": {},
+    "Responses":null,
+    "Embeds":  null,
+    "Reactions": null,
+    "Mentions": null,
+    "Cleanup": false,
+    "UserSpecific": null,
+    "ServerSpecific": null
+  },

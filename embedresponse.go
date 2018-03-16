@@ -22,9 +22,24 @@ func (e EmbedResponse) getEmbed() *discordgo.MessageEmbed {
 	return NewEmbed().SetImage(e.URL).MessageEmbed
 }
 
-func (e *EmbedResponse) respond(session *discordgo.Session, message *discordgo.MessageCreate) bool {
+func (e *EmbedResponse) respond(session *discordgo.Session, message *discordgo.MessageCreate, mentions []string) bool {
 	session.ChannelMessageSendEmbed(message.ChannelID, e.getEmbed())
+	allMentions := ""
+	if mentions != nil {
+		for i := range mentions {
+			if mentions[i] == "self" {
+				allMentions += " " + message.Author.Mention()
+			} else {
+				//otherwise mentions don't work! stupid usernames.
+			}
+		}
+		session.ChannelMessageSend(message.ChannelID, allMentions)
+	}
 	return true
+}
+
+func (e *EmbedResponse) chance() bool {
+	return runIt(e.Chance)
 }
 
 //***********************************************************************
