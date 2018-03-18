@@ -18,13 +18,12 @@ import (
 var config *botconfig.Config //config global object
 
 func init() {
-	config = botconfig.NewConfig() //build the config file
+	config = botconfig.ReadFromJSON() //build the config file
 	config.Ars = botresponse.ReadFromJSON()
 }
 
 func main() {
 	discord, err := discordgo.New("Bot " + config.Token)
-
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
 		return
@@ -51,7 +50,7 @@ func main() {
 
 //ready when bot ready, just maintains the status of the bot.
 func ready(session *discordgo.Session, message *discordgo.MessageCreate) {
-	session.UpdateStatus(0, "with 100% Python!")
+	session.UpdateStatus(0, config.Status)
 }
 
 //called every time a message received in a channel the bot is in
@@ -84,6 +83,7 @@ func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate)
 	go compliment(session, message, responded)
 	go delete(session, message, responded)
 	go cleanup(session, message, responded)
+	go botstatus(session, message, responded)
 	<-responded //to synchronize back up with the coroutines
 	close(responded)
 }

@@ -1,3 +1,8 @@
 *.exe
 *.exe~
 .vscode/
+godiscordbot
+devbotToken
+botToken
+config.json
+responses.json

@@ -1,6 +1,6 @@
 [
   {
-    "Trigger": "^[A-Z,.?!\"' 0-9]*$",
+    "Trigger": "^[A-Z 0-9?,.]{4,300}$",
     "Regex": {},
     "Responses":[
       {

@@ -227,3 +227,19 @@ func RollDie(numFaces int64) int64 {
 	botutils.Check(err)
 	return rnged.Int64() + 1
 }
+
+func botstatus(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
+	expr2, err2 := regexp.Compile("^!botstatus .*$")
+	botutils.Check(err2)
+
+	if expr2.MatchString(message.Content) {
+		if message.Author.ID == config.OwnerID { //
+			config.Status = message.Content[11:]
+			session.UpdateStatus(0, config.Status)
+			session.ChannelMessageDelete(message.ChannelID, message.ID)
+			responded <- true
+			return
+		}
+	}
+	return
+}
