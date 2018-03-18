@@ -4,28 +4,58 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"math/big"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-//prints the results of an error if it exists
+func buildResponseList() {
+	ars = append(ars, NewAutoResponse("[p|P]ing", []*TextResponse{NewTextResponse(1, "pong")}, nil, nil, nil, false, nil, nil))
+	ars = append(ars, NewAutoResponse("[p|P]ling", []*TextResponse{NewTextResponse(1, "pong")}, nil, nil, nil, false, nil, nil))
+	ars = append(ars, NewAutoResponse("[p|P]sing", []*TextResponse{NewTextResponse(1, "pong")}, nil, nil, nil, false, nil, nil))
+
+	ars = append(ars, NewAutoResponse("pong", nil, []*EmbedResponse{NewEmbedResponse(1, "https://starscollideani.files.wordpress.com/2014/08/cirno-bsod.png?w=332&h=199")}, nil, nil, false, nil, nil))
+	ars = append(ars, NewAutoResponse("handholding", nil, nil, []*ReactionResponse{NewReactionResponse(1, []string{"\U0001F1F1", "\U0001F1EA", "\U0001F1FC", "\U0001F1E9"})}, nil, false, nil, nil))
+}
+
+func readResponseList() {
+	jsonResponse, err1 := ioutil.ReadFile("responses.json")
+	check(err1)
+
+	err := json.Unmarshal(jsonResponse, &ars)
+	check(err)
+
+	for i := range ars {
+		ars[i].updateRegex()
+	}
+}
+
+func writeResponseList() {
+	jsonResponse, _ := json.Marshal(ars)
+	f, _ := os.Create("responses.json")
+	defer f.Close()
+	f.Write(jsonResponse)
+	f.Sync()
+}
+
 func check(err error) {
 	if err != nil {
 		fmt.Println(err)
 	}
 }
 
-//rollDie 'rolls a die', but more important is a bounded number generator from 1-numFaces
 func rollDie(numFaces int64) int64 {
 	rnged, err := rand.Int(rand.Reader, big.NewInt(numFaces))
 	check(err)
 	return rnged.Int64() + 1
 }
 
-var myClient = &http.Client{Timeout: 10 * time.Second} //to help handle getting json from the web
+var myClient = &http.Client{Timeout: 10 * time.Second}
+
 func getJSON(url string, target interface{}) error {
 	r, err := myClient.Get(url)
 	if err != nil {
@@ -36,7 +66,6 @@ func getJSON(url string, target interface{}) error {
 	return json.NewDecoder(r.Body).Decode(target)
 }
 
-//takes in a chance (1:chance) and rolls to see if the number generator for that range hits 0
 func runIt(chance int) bool {
 	rnged, _ := rand.Int(rand.Reader, big.NewInt(int64(chance)))
 	if rnged.Int64() == int64(0) {
@@ -45,7 +74,6 @@ func runIt(chance int) bool {
 	return false
 }
 
-//retreive the guild/server by name from the current message and session
 func getServer(session *discordgo.Session, msg *discordgo.MessageCreate) string {
 	guild := getGuild(session, msg)
 	if guild != nil {
@@ -54,7 +82,6 @@ func getServer(session *discordgo.Session, msg *discordgo.MessageCreate) string 
 	return ""
 }
 
-//retreive the actual server/guild object
 func getGuild(session *discordgo.Session, msg *discordgo.MessageCreate) *discordgo.Guild {
 	channel, err := session.State.Channel(msg.ChannelID)
 	if err != nil {
@@ -78,7 +105,6 @@ func getGuild(session *discordgo.Session, msg *discordgo.MessageCreate) *discord
 	return guild
 }
 
-//retreive the roles of a user based on the message the sent+the current session
 func getRoles(session *discordgo.Session, msg *discordgo.MessageCreate) []string {
 	currentGuild := getGuild(session, msg)
 
@@ -94,7 +120,6 @@ func getRoles(session *discordgo.Session, msg *discordgo.MessageCreate) []string
 	return roleList
 }
 
-//checks if s is in the list
 func in(s string, list []string) bool {
 	for _, item := range list {
 		if s == item {
@@ -102,19 +127,4 @@ func in(s string, list []string) bool {
 		}
 	}
 	return false
-}
-
-//retreives server emoji by name if it exists.
-func getEmoji(session *discordgo.Session, msg *discordgo.MessageCreate, name string) *discordgo.Emoji {
-	guild := getGuild(session, msg)
-	guildEmojis := guild.Emojis
-	if guildEmojis != nil {
-		for _, guildEmoji := range guildEmojis {
-			if guildEmoji.Name == name {
-				return guildEmoji
-			}
-		}
-	}
-
-	return nil
 }

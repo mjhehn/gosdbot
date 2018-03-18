@@ -1,6 +1,8 @@
-package main
+package botresponse
 
 import (
+	"godiscordbot/pkg/botutils"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -20,7 +22,7 @@ func NewReactionResponse(setChance int, setText []string) *ReactionResponse {
 
 func (r *ReactionResponse) respond(session *discordgo.Session, message *discordgo.MessageCreate, mentions []string) bool {
 	for _, emoji := range r.Emojis {
-		emojiObject := getEmoji(session, message, emoji)
+		emojiObject := botutils.GetEmoji(session, message, emoji)
 		if emojiObject != nil {
 			session.MessageReactionAdd(message.ChannelID, message.ID, emojiObject.APIName())
 		} else {
@@ -31,5 +33,5 @@ func (r *ReactionResponse) respond(session *discordgo.Session, message *discordg
 }
 
 func (r *ReactionResponse) chance() bool {
-	return runIt(r.Chance)
+	return botutils.RunIt(r.Chance)
 }

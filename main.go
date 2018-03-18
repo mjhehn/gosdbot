@@ -1,7 +1,13 @@
+/*
+package comments!
+*/
 package main
 
 import (
 	"fmt"
+	"godiscordbot/pkg/botconfig"
+	"godiscordbot/pkg/botresponse"
+	"godiscordbot/pkg/botutils"
 	"os"
 	"os/signal"
 	"syscall"
@@ -9,12 +15,15 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var config *ServerConfig //config global object
+var config *botconfig.Config //config global object
+
+func init() {
+	config = botconfig.NewConfig() //build the config file
+	config.Ars = botresponse.ReadFromJSON()
+}
 
 func main() {
-	config = NewServerConfig()                                                                            //build the config file
-	discord, err := discordgo.New("Bot " + "NDE1NzMxMDQ0MDgwNDE4ODE2.DW6Lpw.LYY0ZKfCKvC3YMJbCe1u0XpIF7M") //dev bot
-	//discord, err := discordgo.New("Bot " + "NDA4ODQ1OTY4MDEyNzM4NTYw.DVV_9w.wRs92tvW30aAmW8JOMgqB2GzFQY") //main bot
+	discord, err := discordgo.New("Bot " + config.Token)
 
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
@@ -47,7 +56,7 @@ func ready(session *discordgo.Session, message *discordgo.MessageCreate) {
 
 //called every time a message received in a channel the bot is in
 func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate) {
-	currentServer := getServer(session, message)
+	currentServer := botutils.GetServer(session, message)
 
 	if message.Author.ID == session.State.User.ID || message.Author.Bot { // Ignore all messages created by the bot itself(un-needed given the second check) or another bot
 		return
@@ -59,15 +68,15 @@ func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate)
 	go mute(session, message, responded)
 	go unmute(session, message, responded)
 	go mutestatus(session, message, responded)
-	if in(currentServer, config.mutedServers) { //if the message is from a muted server, and the list wasn't updated by the mute commands, return
+	if botutils.In(currentServer, config.MutedServers) { //if the message is from a muted server, and the list wasn't updated by the mute commands, return
 		return
 	}
 
-	for _, autoresponse := range config.ars { //parse through all the json-configured responses
-		if autoresponse.ServerSpecific == nil || in(currentServer, autoresponse.ServerSpecific) {
-			go autoresponse.checkResponses(session, message, textresponse, responded)
-			go autoresponse.checkResponses(session, message, embedresponse, responded)
-			go autoresponse.checkResponses(session, message, reactionresponse, responded)
+	for _, autoresponse := range config.Ars { //parse through all the json-configured responses
+		if autoresponse.ServerSpecific == nil || botutils.In(currentServer, autoresponse.ServerSpecific) {
+			go autoresponse.CheckResponses(session, message, botresponse.Textresponse, responded)
+			go autoresponse.CheckResponses(session, message, botresponse.Embedresponse, responded)
+			go autoresponse.CheckResponses(session, message, botresponse.Reactionresponse, responded)
 		}
 	}
 	go notJustTheMen(session, message, responded)

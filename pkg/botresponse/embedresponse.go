@@ -1,6 +1,8 @@
-package main
+package botresponse
 
 import (
+	"godiscordbot/pkg/botutils"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -41,7 +43,7 @@ func (e *EmbedResponse) respond(session *discordgo.Session, message *discordgo.M
 }
 
 func (e *EmbedResponse) chance() bool {
-	return runIt(e.Chance)
+	return botutils.RunIt(e.Chance)
 }
 
 //***********************************************************************

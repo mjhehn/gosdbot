@@ -1,18 +1,21 @@
-//contains most of the functions and methods associated directly with the Autoresponse struct and its most relevant interfaces.
-package main
+//botresponse contains most of the structs, functions and methods associated directly with the Autoresponse struct and its most relevant interfaces.
+package botresponse
 
 import (
+	"encoding/json"
 	"fmt"
+	"godiscordbot/pkg/botutils"
+	"io/ioutil"
 	"regexp"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-//help imporve readability of the 'general' response checker method.
+//help improve readability of the 'general' response checker method.
 const (
-	textresponse     = 0
-	embedresponse    = 1
-	reactionresponse = 2
+	Textresponse     = 0
+	Embedresponse    = 1
+	Reactionresponse = 2
 )
 
 //Used to help generalize the code between the embed, text, and reaction responses.
@@ -49,13 +52,13 @@ func NewAutoResponse(Trigger string, Responses []*TextResponse, Embeds []*EmbedR
 	return a
 }
 
-//checkResponses acts as a generic checker and applier of responses possible from the autoresponse it is called upon.
+//CheckResponses acts as a generic checker and applier of responses possible from the autoresponse it is called upon.
 //takes:
 //pointer to the current session
 //pointer to the message created by messagecreate event
 //an integer telling the check whether it's checking through text responses, embedded resposnes, or (emoji) reaction responses (0, 1, 2 respectively)
 //a bool channel to note when a goroutine has made an answer.
-func (a *AutoResponse) checkResponses(session *discordgo.Session, message *discordgo.MessageCreate, checkType int, responded chan bool) {
+func (a *AutoResponse) CheckResponses(session *discordgo.Session, message *discordgo.MessageCreate, checkType int, responded chan bool) {
 	var selectedResponse responder
 	var responses []responder
 
@@ -66,27 +69,23 @@ func (a *AutoResponse) checkResponses(session *discordgo.Session, message *disco
 	}()
 
 	switch checkType { //switch depending on what type of responses we're checking. integers with constants.
-	case textresponse:
+	case Textresponse:
 		for _, r := range a.Responses {
 			responses = append(responses, r)
 		}
-	case embedresponse:
+	case Embedresponse:
 		for _, r := range a.Embeds {
 			responses = append(responses, r)
 		}
-	case reactionresponse:
+	case Reactionresponse:
 		for _, r := range a.Reactions {
 			responses = append(responses, r)
 		}
-	default:
-		for _, r := range a.Responses {
-			responses = append(responses, r)
-		}
-		break
+		return
 	}
 
 	//if this is user specific, and the message author isn't in that list
-	if a.UserSpecific != nil && !in(message.Author.Username, a.UserSpecific) {
+	if a.UserSpecific != nil && !botutils.In(message.Author.Username, a.UserSpecific) {
 		return
 	}
 
@@ -122,4 +121,19 @@ func (a *AutoResponse) addReactions(session *discordgo.Session, message *discord
 //updateRegex: update the regex field to a compiled expression
 func (a *AutoResponse) updateRegex() {
 	a.Regex, _ = regexp.Compile(a.Trigger)
+}
+
+//ReadFromJSON builds a list of autoresponses based on a json file
+func ReadFromJSON() []*AutoResponse {
+	var ars []*AutoResponse
+	jsonResponse, err1 := ioutil.ReadFile("responses.json")
+	botutils.Check(err1)
+
+	err := json.Unmarshal(jsonResponse, &ars)
+	botutils.Check(err)
+
+	for i := range ars {
+		ars[i].updateRegex()
+	}
+	return ars
 }

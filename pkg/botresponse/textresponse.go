@@ -1,6 +1,10 @@
-package main
+package botresponse
 
-import "github.com/bwmarrin/discordgo"
+import (
+	"godiscordbot/pkg/botutils"
+
+	"github.com/bwmarrin/discordgo"
+)
 
 //TextResponse stores the chance a text response will be made and the text itself
 type TextResponse struct {
@@ -32,5 +36,5 @@ func (t *TextResponse) respond(session *discordgo.Session, message *discordgo.Me
 }
 
 func (t *TextResponse) chance() bool {
-	return runIt(t.Chance)
+	return botutils.RunIt(t.Chance)
 }
