@@ -234,7 +234,7 @@ func botstatus(session *discordgo.Session, message *discordgo.MessageCreate, res
 
 	if expr2.MatchString(message.Content) {
 		if message.Author.ID == config.OwnerID { //
-			config.Status = message.Content[11:]
+			config.Status = message.Content[8:]
 			session.UpdateStatus(0, config.Status)
 			session.ChannelMessageDelete(message.ChannelID, message.ID)
 			responded <- true
