@@ -1,4 +1,4 @@
-//botresponse contains most of the structs, functions and methods associated directly with the Autoresponse struct and its most relevant interfaces.
+//Package botresponse contains most of the structs, functions and methods associated directly with the Autoresponse struct and its most relevant interfaces.
 package botresponse
 
 import (
@@ -19,7 +19,7 @@ const (
 )
 
 //Used to help generalize the code between the embed, text, and reaction responses.
-type responder interface {
+type respondable interface {
 	respond(session *discordgo.Session, message *discordgo.MessageCreate, mentions []string) bool
 	chance() bool
 }
@@ -59,8 +59,8 @@ func NewAutoResponse(Trigger string, Responses []*TextResponse, Embeds []*EmbedR
 //an integer telling the check whether it's checking through text responses, embedded resposnes, or (emoji) reaction responses (0, 1, 2 respectively)
 //a bool channel to note when a goroutine has made an answer.
 func (a *AutoResponse) CheckResponses(session *discordgo.Session, message *discordgo.MessageCreate, checkType int, responded chan bool) {
-	var selectedResponse responder
-	var responses []responder
+	var selectedResponse respondable
+	var responses []respondable
 
 	defer func() { //handle failure due to closed channel
 		if r := recover(); r != nil {
