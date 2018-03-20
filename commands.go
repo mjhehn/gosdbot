@@ -229,7 +229,7 @@ func RollDie(numFaces int64) int64 {
 }
 
 func botstatus(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
-	expr2, err2 := regexp.Compile("^!botstatus .*$")
+	expr2, err2 := regexp.Compile("^!status .*$")
 	botutils.Check(err2)
 
 	if expr2.MatchString(message.Content) {
