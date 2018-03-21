@@ -4,9 +4,9 @@ package main
 import (
 	"crypto/rand"
 	"fmt"
-	"godiscordbot/pkg/botutils"
 	"math/big"
 	"regexp"
+	"sdbot/pkg/botutils"
 	"strconv"
 	"strings"
 

@@ -4,9 +4,9 @@ package botresponse
 import (
 	"encoding/json"
 	"fmt"
-	"godiscordbot/pkg/botutils"
 	"io/ioutil"
 	"regexp"
+	"sdbot/pkg/botutils"
 
 	"github.com/bwmarrin/discordgo"
 )

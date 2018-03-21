@@ -5,11 +5,11 @@ package main
 
 import (
 	"fmt"
-	"godiscordbot/pkg/botconfig"
-	"godiscordbot/pkg/botresponse"
-	"godiscordbot/pkg/botutils"
 	"os"
 	"os/signal"
+	"sdbot/pkg/botconfig"
+	"sdbot/pkg/botresponse"
+	"sdbot/pkg/botutils"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"

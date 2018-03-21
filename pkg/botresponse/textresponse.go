@@ -1,7 +1,7 @@
 package botresponse
 
 import (
-	"godiscordbot/pkg/botutils"
+	"sdbot/pkg/botutils"
 
 	"github.com/bwmarrin/discordgo"
 )

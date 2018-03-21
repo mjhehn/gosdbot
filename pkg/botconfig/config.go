@@ -2,9 +2,9 @@ package botconfig
 
 import (
 	"encoding/json"
-	"godiscordbot/pkg/botresponse"
-	"godiscordbot/pkg/botutils"
 	"io/ioutil"
+	"sdbot/pkg/botresponse"
+	"sdbot/pkg/botutils"
 )
 
 //Config is a wrapper for the autoresposnses and mutedServers objects needed by the bot
