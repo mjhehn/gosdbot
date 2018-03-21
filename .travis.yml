@@ -11,8 +11,6 @@ go:
   - "1.10"
   - master 
 
-go_import_path: github.com/mjhehn/gosdbot
-
 matrix:
   # It's ok if our code fails on unstable development versions of Go.
   allow_failures:
@@ -32,4 +30,5 @@ install:
 # script always run to completion (set +e). All of these code checks are must haves
 # in a modern Go project.
 script:
-  - go test -v -race mjhehn/gosdbot                   # Run all the tests with the race detector enabled
+  - cd $HOME/gopath/src/github.com/mjhehn/gosdbot
+  - go test -v -race gosdbot                   # Run all the tests with the race detector enabled
