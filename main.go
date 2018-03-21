@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sdbot/pkg/botclever"
 	"sdbot/pkg/botconfig"
 	"sdbot/pkg/botresponse"
 	"sdbot/pkg/botutils"
@@ -84,6 +85,7 @@ func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate)
 	go delete(session, message, responded)
 	go cleanup(session, message, responded)
 	go botstatus(session, message, responded)
+	go botclever.CleverResponse(session, message, responded)
 	<-responded //to synchronize back up with the coroutines
 	close(responded)
 }

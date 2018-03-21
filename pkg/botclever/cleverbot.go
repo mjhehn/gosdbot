@@ -1,0 +1,34 @@
+package botclever
+
+import (
+	"sdbot/pkg/botutils"
+
+	cleverbot "github.com/CleverbotIO/go-cleverbot.io"
+	"github.com/bwmarrin/discordgo"
+)
+
+var clvrbot *cleverbot.Session
+
+func init() {
+	var err error
+	clvrbot, err = cleverbot.New("IGHvKK0w5ozUyNlp", "Y2PWfAYhH43Aa9Fy1gMjg9OxuYFk3w7B")
+	botutils.Check(err)
+}
+
+//CleverResponse parses requests from channels tagged with the cleverbot webhook and mentioning this bot, and then asks them to cleverbot.
+func CleverResponse(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
+	webhooks, err := session.ChannelWebhooks(message.ChannelID)
+	botutils.Check(err)
+
+	if botutils.CheckWebHooks("cleverbot", webhooks) {
+		if len(message.Mentions) == 1 && message.Mentions[0].ID == session.State.User.ID {
+			//send call to the cleverbot.
+			result, err := clvrbot.Ask(message.Content)
+			botutils.Check(err)
+			session.ChannelMessageSend(message.ChannelID, (message.Author.Mention() + " " + result))
+			responded <- true
+		}
+	}
+
+	return
+}

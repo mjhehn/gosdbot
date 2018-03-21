@@ -112,3 +112,13 @@ func GetEmoji(session *discordgo.Session, msg *discordgo.MessageCreate, name str
 
 	return nil
 }
+
+//CheckWebHooks parses through a list of webhooks given the channel to see if the target is present
+func CheckWebHooks(target string, webhooks []*discordgo.Webhook) bool {
+	for _, hook := range webhooks {
+		if target == hook.Name {
+			return true
+		}
+	}
+	return false
+}
