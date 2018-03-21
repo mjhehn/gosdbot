@@ -31,4 +31,4 @@ install:
 # in a modern Go project.
 script:
   - export GOPATH=$GOPATH/src/github.com/mjhehn
-  - go test -v -race ./..        # Run all the tests with the race detector enabled
+  - go test -v -race ./...        # Run all the tests with the race detector enabled
