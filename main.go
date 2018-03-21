@@ -1,7 +1,7 @@
 /*
 package comments!
 */
-package sdbot
+package main
 
 import (
 	"fmt"

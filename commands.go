@@ -1,5 +1,5 @@
 //responders with !word triggers
-package sdbot
+package main
 
 import (
 	"crypto/rand"

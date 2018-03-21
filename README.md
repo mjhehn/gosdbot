@@ -1,0 +1,1 @@
+- [![Go Walker](http://gowalker.org/api/v1/badge)](https://gowalker.org/github.com/mjhehn/semi-decent-bot) [![Go report](http://goreportcard.com/badge/mjhehn/semi-decent-bot)](http://goreportcard.com/report/bwmarrin/discordgo)[![Build Status]((https://travis-ci.org/mjhehn/semi-decent-bot.svg?branch=master))]((https://travis-ci.org/mjhehn/semi-decent-bot.svg?branch=master))
