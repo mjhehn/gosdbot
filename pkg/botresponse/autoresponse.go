@@ -3,7 +3,6 @@ package botresponse
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"regexp"
 	"sdbot/pkg/botutils"
@@ -64,7 +63,7 @@ func (a *AutoResponse) CheckResponses(session *discordgo.Session, message *disco
 
 	defer func() { //handle failure due to closed channel
 		if r := recover(); r != nil {
-			fmt.Println("Recovered in f", r)
+			//fmt.Println("Recovered in f", r)
 		}
 	}()
 
