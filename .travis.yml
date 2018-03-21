@@ -11,6 +11,8 @@ go:
   - "1.10"
   - master 
 
+go_import_path: github.com/mjhehn/semi-decent-bot
+
 matrix:
   # It's ok if our code fails on unstable development versions of Go.
   allow_failures:
