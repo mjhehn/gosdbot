@@ -106,7 +106,7 @@ func (c *Config) Unmute(session *discordgo.Session, message *discordgo.MessageCr
 	return
 }
 
-//Mutedstatus as it says, returns the current message channel's server mute state
+//Mutestatus as it says, returns the current message channel's server mute state
 func (c *Config) Mutestatus(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr3, err3 := regexp.Compile("^!mutestatus$")
 	Check(err3)
