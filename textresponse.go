@@ -1,8 +1,6 @@
-package botresponse
+package sdbot
 
 import (
-	"semi-decent-bot/pkg/botutils"
-
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -36,5 +34,5 @@ func (t *TextResponse) respond(session *discordgo.Session, message *discordgo.Me
 }
 
 func (t *TextResponse) chance() bool {
-	return botutils.RunIt(t.Chance)
+	return RunIt(t.Chance)
 }

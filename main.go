@@ -1,7 +1,4 @@
-/*
-package comments!
-*/
-package main
+package sdbot
 
 import (
 	"fmt"
@@ -9,19 +6,14 @@ import (
 	"os/signal"
 	"syscall"
 
-	"semi-decent-bot/pkg/botclever"
-	"semi-decent-bot/pkg/botconfig"
-	"semi-decent-bot/pkg/botresponse"
-	"semi-decent-bot/pkg/botutils"
-
 	"github.com/bwmarrin/discordgo"
 )
 
-var config *botconfig.Config //config global object
+var config *Config //config global object
 
 func init() {
-	config = botconfig.ReadFromJSON() //build the config file
-	config.Ars = botresponse.ReadFromJSON()
+	config = ConfigFromJSON() //build the config file
+	config.Ars = ReadFromJSON()
 }
 
 func main() {
@@ -57,7 +49,7 @@ func ready(session *discordgo.Session, message *discordgo.MessageCreate) {
 
 //called every time a message received in a channel the bot is in
 func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate) {
-	currentServer := botutils.GetServer(session, message)
+	currentServer := GetServer(session, message)
 
 	if message.Author.ID == session.State.User.ID || message.Author.Bot { // Ignore all messages created by the bot itself(un-needed given the second check) or another bot
 		return
@@ -69,17 +61,17 @@ func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate)
 	go mute(session, message, responded)
 	go unmute(session, message, responded)
 	go mutestatus(session, message, responded)
-	if botutils.In(currentServer, config.MutedServers) { //if the message is from a muted server, and the list wasn't updated by the mute commands, return
+	if In(currentServer, config.MutedServers) { //if the message is from a muted server, and the list wasn't updated by the mute commands, return
 		return
 	}
-	if botutils.CheckWebHooks(session, message, "cleverbot") {
-		go botclever.CleverResponse(session, message, responded)
+	if CheckWebHooks(session, message, "cleverbot") {
+		go CleverResponse(session, message, responded)
 	} else {
 		for _, autoresponse := range config.Ars { //parse through all the json-configured responses
-			if autoresponse.ServerSpecific == nil || botutils.In(currentServer, autoresponse.ServerSpecific) {
-				go autoresponse.CheckResponses(session, message, botresponse.Textresponse, responded)
-				go autoresponse.CheckResponses(session, message, botresponse.Embedresponse, responded)
-				go autoresponse.CheckResponses(session, message, botresponse.Reactionresponse, responded)
+			if autoresponse.ServerSpecific == nil || In(currentServer, autoresponse.ServerSpecific) {
+				go autoresponse.CheckResponses(session, message, Textresponse, responded)
+				go autoresponse.CheckResponses(session, message, Embedresponse, responded)
+				go autoresponse.CheckResponses(session, message, Reactionresponse, responded)
 			}
 		}
 		go notJustTheMen(session, message, responded)

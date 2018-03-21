@@ -1,15 +1,13 @@
-package botconfig
+package sdbot
 
 import (
 	"encoding/json"
 	"io/ioutil"
-	"semi-decent-bot/pkg/botresponse"
-	"semi-decent-bot/pkg/botutils"
 )
 
 //Config is a wrapper for the autoresposnses and mutedServers objects needed by the bot
 type Config struct {
-	Ars          []*botresponse.AutoResponse
+	Ars          []*AutoResponse
 	MutedServers []string
 	Token        string
 	Status       string
@@ -26,7 +24,7 @@ type ConfigJSON struct {
 //NewConfig is a server cstor
 func NewConfig() *Config {
 	sc := new(Config)
-	sc.Ars = []*botresponse.AutoResponse{}
+	sc.Ars = []*AutoResponse{}
 	sc.MutedServers = []string{}
 	sc.Token = "bottokengoeshere"
 	sc.Status = "default!"
@@ -37,7 +35,7 @@ func NewConfig() *Config {
 //NewConfigByToken is a server cstor
 func NewConfigByToken(token string) *Config {
 	sc := new(Config)
-	sc.Ars = []*botresponse.AutoResponse{}
+	sc.Ars = []*AutoResponse{}
 	sc.MutedServers = []string{}
 	sc.Token = token
 	sc.Status = "default!"
@@ -45,15 +43,15 @@ func NewConfigByToken(token string) *Config {
 	return sc
 }
 
-//ReadFromJSON builds a list of autoresponses based on a json file
-func ReadFromJSON() *Config {
+//ConfigFromJSON builds a list of autoresponses based on a json file
+func ConfigFromJSON() *Config {
 	var data *ConfigJSON
 	c := NewConfig()
 	jsonConfig, err1 := ioutil.ReadFile("config.json")
-	botutils.Check(err1)
+	Check(err1)
 
 	err := json.Unmarshal(jsonConfig, &data)
-	botutils.Check(err)
+	Check(err)
 
 	c.MutedServers = []string{}
 	c.OwnerID = data.OwnerID

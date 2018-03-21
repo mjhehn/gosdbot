@@ -1,4 +1,4 @@
-package botutils
+package sdbot
 
 import (
 	"crypto/rand"

@@ -1,11 +1,9 @@
-//Package botresponse contains most of the structs, functions and methods associated directly with the Autoresponse struct and its most relevant interfaces.
-package botresponse
+package sdbot
 
 import (
 	"encoding/json"
 	"io/ioutil"
 	"regexp"
-	"semi-decent-bot/pkg/botutils"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -69,7 +67,7 @@ func (a *AutoResponse) CheckResponses(session *discordgo.Session, message *disco
 	responses := a.getRespondables(checkType) //get the reponse type list/slice
 
 	//if this is user specific, and the message author isn't in that list
-	if a.UserSpecific != nil && !botutils.In(message.Author.Username, a.UserSpecific) {
+	if a.UserSpecific != nil && !In(message.Author.Username, a.UserSpecific) {
 		return
 	}
 
@@ -130,10 +128,10 @@ func (a *AutoResponse) updateRegex() {
 func ReadFromJSON() []*AutoResponse {
 	var ars []*AutoResponse
 	jsonResponse, err1 := ioutil.ReadFile("responses.json")
-	botutils.Check(err1)
+	Check(err1)
 
 	err := json.Unmarshal(jsonResponse, &ars)
-	botutils.Check(err)
+	Check(err)
 
 	for i := range ars {
 		ars[i].updateRegex()
