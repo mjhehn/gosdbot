@@ -32,4 +32,4 @@ install:
 # script always run to completion (set +e). All of these code checks are must haves
 # in a modern Go project.
 script:
-  - go test -v -race gosdbot                   # Run all the tests with the race detector enabled
+  - go test -v -race github.com/mjhehn/semi-decent-bot/gosdbot                   # Run all the tests with the race detector enabled
