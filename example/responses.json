@@ -1,0 +1,18 @@
+[
+  {
+    "Trigger": "^[pP]ing$",
+    "Regex": {},
+    "Responses": [
+      {
+        "Chance": 1,
+        "Text": "Pong!"
+      }
+    ],
+    "Embeds": null,
+    "Reactions": null,
+    "Mentions": null,
+    "Cleanup": false,
+    "UserSpecific": null,
+    "ServerSpecific": null
+  }
+]

@@ -1,4 +1,4 @@
-package sdbot
+package gosdbot
 
 import (
 	"github.com/bwmarrin/discordgo"

@@ -1,4 +1,4 @@
-package sdbot
+package gosdbot
 
 import (
 	cleverbot "github.com/CleverbotIO/go-cleverbot.io"

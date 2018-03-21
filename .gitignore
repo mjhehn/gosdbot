@@ -1,6 +1,4 @@
 *.exe
 *.exe~
 .vscode/
-sdbot
-responses.json
-config.json
+gosdbot
