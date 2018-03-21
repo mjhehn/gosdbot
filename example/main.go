@@ -1,19 +1,20 @@
-package sdbot
+package main
 
 import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sdbot"
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
 )
 
-var config *Config //config global object
+var config *sdbot.Config //config global object
 
 func init() {
-	config = ConfigFromJSON() //build the config file
-	config.Ars = ReadFromJSON()
+	config = sdbot.ConfigFromJSON() //build the config file
+	config.Ars = sdbot.ReadFromJSON()
 }
 
 func main() {
@@ -49,7 +50,7 @@ func ready(session *discordgo.Session, message *discordgo.MessageCreate) {
 
 //called every time a message received in a channel the bot is in
 func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate) {
-	currentServer := GetServer(session, message)
+	currentServer := sdbot.GetServer(session, message)
 
 	if message.Author.ID == session.State.User.ID || message.Author.Bot { // Ignore all messages created by the bot itself(un-needed given the second check) or another bot
 		return
@@ -58,28 +59,28 @@ func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate)
 	responded := make(chan bool) //build the response channel
 
 	//begin the bot proper!
-	go mute(session, message, responded)
-	go unmute(session, message, responded)
-	go mutestatus(session, message, responded)
-	if In(currentServer, config.MutedServers) { //if the message is from a muted server, and the list wasn't updated by the mute commands, return
+	go config.Botstatus(session, message, responded)
+	go config.Mute(session, message, responded)
+	go config.Unmute(session, message, responded)
+	go config.Mutestatus(session, message, responded)
+	if sdbot.In(currentServer, config.MutedServers) { //if the message is from a muted server, and the list wasn't updated by the mute commands, return
 		return
 	}
-	if CheckWebHooks(session, message, "cleverbot") {
-		go CleverResponse(session, message, responded)
+	if sdbot.CheckWebHooks(session, message, "cleverbot") {
+		go sdbot.CleverResponse(session, message, responded)
 	} else {
 		for _, autoresponse := range config.Ars { //parse through all the json-configured responses
-			if autoresponse.ServerSpecific == nil || In(currentServer, autoresponse.ServerSpecific) {
-				go autoresponse.CheckResponses(session, message, Textresponse, responded)
-				go autoresponse.CheckResponses(session, message, Embedresponse, responded)
-				go autoresponse.CheckResponses(session, message, Reactionresponse, responded)
+			if autoresponse.ServerSpecific == nil || sdbot.In(currentServer, autoresponse.ServerSpecific) {
+				go autoresponse.CheckResponses(session, message, sdbot.Textresponse, responded)
+				go autoresponse.CheckResponses(session, message, sdbot.Embedresponse, responded)
+				go autoresponse.CheckResponses(session, message, sdbot.Reactionresponse, responded)
 			}
 		}
-		go notJustTheMen(session, message, responded)
-		go diceRoller(session, message, responded)
-		go compliment(session, message, responded)
-		go delete(session, message, responded)
-		go cleanup(session, message, responded)
-		go botstatus(session, message, responded)
+		go sdbot.NotJustTheMen(session, message, responded)
+		go sdbot.DiceRoller(session, message, responded)
+		go sdbot.Compliment(session, message, responded)
+		go sdbot.Delete(session, message, responded)
+		go sdbot.Cleanup(session, message, responded)
 	}
 
 	<-responded //to synchronize back up with the coroutines

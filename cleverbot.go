@@ -24,6 +24,5 @@ func CleverResponse(session *discordgo.Session, message *discordgo.MessageCreate
 			responded <- true
 		}
 	}
-
 	return
 }

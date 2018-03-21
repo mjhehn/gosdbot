@@ -12,7 +12,7 @@ import (
 )
 
 //rolls a variable number and type of dice. same format of parameters as other responders.
-func diceRoller(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
+func DiceRoller(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!(ir|r)oll [0-9]{0,3}d[0-9]{1,3}$")
 	Check(err)
 	if expr.MatchString(message.Content) {
@@ -52,7 +52,7 @@ func diceRoller(session *discordgo.Session, message *discordgo.MessageCreate, re
 }
 
 //pulls a 'compliment' from a json list found online from emergencycompliment.com and displays it
-func compliment(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
+func Compliment(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!compliment$")
 	Check(err)
 	if expr.MatchString(message.Content) {
@@ -70,7 +70,7 @@ func compliment(session *discordgo.Session, message *discordgo.MessageCreate, re
 }
 
 //removes messages from bots within a range. defaults to 100 messages back to clean
-func cleanup(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
+func Cleanup(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!cleanup[ ]{0,1}[0-9]*$")
 	Check(err)
 	if expr.MatchString(message.Content) {
@@ -109,7 +109,7 @@ func cleanup(session *discordgo.Session, message *discordgo.MessageCreate, respo
 }
 
 //delete a number of messages. same basically as cleanup
-func delete(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
+func Delete(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!delete [0-9]+$")
 	Check(err)
 	if expr.MatchString(message.Content) {
@@ -137,69 +137,8 @@ func delete(session *discordgo.Session, message *discordgo.MessageCreate, respon
 
 }
 
-//add current sever to the muted list, which allows only mute commands to be received or sent.
-func mute(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
-	expr, err := regexp.Compile("^!mute$")
-	Check(err)
-
-	//mute
-	if expr.MatchString(message.Content) {
-		currentServer := GetServer(session, message)
-		currentRoles := GetRoles(session, message)
-		if !In(currentServer, config.MutedServers) && In("Bot Admin", currentRoles) { //mute
-			config.MutedServers = append(config.MutedServers, currentServer)
-			session.ChannelMessageSend(message.ChannelID, "Bot muted.")
-			responded <- true
-			return
-		}
-	}
-	return
-}
-
-func unmute(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
-	expr2, err2 := regexp.Compile("^!unmute$")
-	Check(err2)
-
-	if expr2.MatchString(message.Content) {
-		currentServer := GetServer(session, message)
-		currentRoles := GetRoles(session, message)
-
-		if In(currentServer, config.MutedServers) && In("Bot Admin", currentRoles) { //mute
-			for i, serv := range config.MutedServers {
-				if serv == currentServer {
-					config.MutedServers = append(config.MutedServers[:i], config.MutedServers[i+1:]...)
-				}
-			}
-			session.ChannelMessageSend(message.ChannelID, "Bot unmuted.")
-			responded <- true
-			return
-		}
-	}
-	return
-}
-
-func mutestatus(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
-	expr3, err3 := regexp.Compile("^!mutestatus$")
-	Check(err3)
-
-	if expr3.MatchString(message.Content) { //mutestatus
-		currentServer := GetServer(session, message)
-		mutedStatus := " "
-		if In(currentServer, config.MutedServers) {
-			mutedStatus = "muted"
-		} else {
-			mutedStatus = "not muted"
-		}
-		result := fmt.Sprintf("Semi-Decent is currently %v on this server", mutedStatus)
-		session.ChannelMessageSend(message.ChannelID, result)
-		responded <- true
-		return
-	}
-	return
-}
-
 //prequel meme
-func notJustTheMen(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
+func NotJustTheMen(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("[mM]en")
 	Check(err)
 	if expr.MatchString(message.Content) && RunIt(8) {
@@ -224,20 +163,4 @@ func RollDie(numFaces int64) int64 {
 	rnged, err := rand.Int(rand.Reader, big.NewInt(numFaces))
 	Check(err)
 	return rnged.Int64() + 1
-}
-
-func botstatus(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
-	expr2, err2 := regexp.Compile("^!status .*$")
-	Check(err2)
-
-	if expr2.MatchString(message.Content) {
-		if message.Author.ID == config.OwnerID { //
-			config.Status = message.Content[8:]
-			session.UpdateStatus(0, config.Status)
-			session.ChannelMessageDelete(message.ChannelID, message.ID)
-			responded <- true
-			return
-		}
-	}
-	return
 }
