@@ -10,7 +10,7 @@ go:
   - 1.9
   - master 
 
-go_import_path: src/github.com/mjhehn/
+go_import_path: github.com/mjhehn
 
 matrix:
   # It's ok if our code fails on unstable development versions of Go.
