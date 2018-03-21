@@ -11,7 +11,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-//rolls a variable number and type of dice. same format of parameters as other responders.
+//DiceRoller rolls a variable number and type of dice. same format of parameters as other responders.
 func DiceRoller(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!(ir|r)oll [0-9]{0,3}d[0-9]{1,3}$")
 	Check(err)
@@ -51,7 +51,7 @@ func DiceRoller(session *discordgo.Session, message *discordgo.MessageCreate, re
 	}
 }
 
-//pulls a 'compliment' from a json list found online from emergencycompliment.com and displays it
+//Compliment pulls a 'compliment' from a json list found online from emergencycompliment.com and displays it
 func Compliment(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!compliment$")
 	Check(err)
@@ -69,7 +69,7 @@ func Compliment(session *discordgo.Session, message *discordgo.MessageCreate, re
 	}
 }
 
-//removes messages from bots within a range. defaults to 100 messages back to clean
+//Cleanup removes messages from bots within a range. defaults to 100 messages back to clean
 func Cleanup(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!cleanup[ ]{0,1}[0-9]*$")
 	Check(err)
@@ -108,7 +108,7 @@ func Cleanup(session *discordgo.Session, message *discordgo.MessageCreate, respo
 
 }
 
-//delete a number of messages. same basically as cleanup
+//Delete a number of messages. same basically as cleanup
 func Delete(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!delete [0-9]+$")
 	Check(err)
@@ -137,7 +137,7 @@ func Delete(session *discordgo.Session, message *discordgo.MessageCreate, respon
 
 }
 
-//prequel meme
+//NotJustTheMen is a prequel meme
 func NotJustTheMen(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("[mM]en")
 	Check(err)

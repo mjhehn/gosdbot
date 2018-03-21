@@ -26,9 +26,3 @@ notifications:
 install:
   - go get -u "github.com/bwmarrin/discordgo"
   - go get -u "github.com/CleverbotIO/go-cleverbot.io"
-
-# script always run to completion (set +e). All of these code checks are must haves
-# in a modern Go project.
-script:
-  - export GOPATH=$GOPATH/src/github.com/mjhehn
-  - go test -v -race ./...        # Run all the tests with the race detector enabled

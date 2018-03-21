@@ -64,7 +64,7 @@ func ConfigFromJSON() *Config {
 	return c
 }
 
-//add current sever to the muted list, which allows only mute commands to be received or sent.
+//Mute adds current sever to the muted list, which allows only mute commands to be received or sent.
 func (c *Config) Mute(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr, err := regexp.Compile("^!mute$")
 	Check(err)
@@ -83,6 +83,7 @@ func (c *Config) Mute(session *discordgo.Session, message *discordgo.MessageCrea
 	return
 }
 
+//Unmute removes the current server from the muted list
 func (c *Config) Unmute(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr2, err2 := regexp.Compile("^!unmute$")
 	Check(err2)
@@ -105,6 +106,7 @@ func (c *Config) Unmute(session *discordgo.Session, message *discordgo.MessageCr
 	return
 }
 
+//Mutedstatus as it says, returns the current message channel's server mute state
 func (c *Config) Mutestatus(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr3, err3 := regexp.Compile("^!mutestatus$")
 	Check(err3)
@@ -125,7 +127,7 @@ func (c *Config) Mutestatus(session *discordgo.Session, message *discordgo.Messa
 	return
 }
 
-//BotStatus updates the bot's "playing" status notifier
+//Botstatus updates the bot's "playing" status notifier
 func (c *Config) Botstatus(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
 	expr2, err2 := regexp.Compile("^!status .*$")
 	Check(err2)

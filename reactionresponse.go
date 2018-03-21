@@ -1,7 +1,6 @@
 package gosdbot
 
 import (
-
 	"github.com/bwmarrin/discordgo"
 )
 
