@@ -1,7 +1,7 @@
 /*
 package comments!
 */
-package main
+package sdbot
 
 import (
 	"fmt"
@@ -49,7 +49,7 @@ func main() {
 	discord.Close()
 }
 
-//ready when bot ready, just maintains the status of the bot.
+//ready when bot ready, just sdbottains the status of the bot.
 func ready(session *discordgo.Session, message *discordgo.MessageCreate) {
 	session.UpdateStatus(0, config.Status)
 }

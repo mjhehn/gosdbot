@@ -29,8 +29,8 @@ func NewConfig() *Config {
 	sc.Ars = []*botresponse.AutoResponse{}
 	sc.MutedServers = []string{}
 	sc.Token = "bottokengoeshere"
-	sc.Status = "with 100% Python!"
-	sc.OwnerID = "owneridgoeshere"
+	sc.Status = "default!"
+	sc.OwnerID = "0"
 	return sc
 }
 
@@ -40,7 +40,7 @@ func NewConfigByToken(token string) *Config {
 	sc.Ars = []*botresponse.AutoResponse{}
 	sc.MutedServers = []string{}
 	sc.Token = token
-	sc.Status = "with 100% Python!"
+	sc.Status = "default!"
 	sc.OwnerID = "0" //fill owner ID here
 	return sc
 }
