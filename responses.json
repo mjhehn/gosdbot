@@ -130,7 +130,7 @@
     "ServerSpecific": null
   },
   {
-    "Trigger": "^[hH]ello there[.!]*$",
+    "Trigger": "[hH]ello there",
     "Regex": {},
     "Responses": [
       {
@@ -175,7 +175,7 @@
     "ServerSpecific": null
   },
   {
-    "Trigger": "(^!plagueis$)|^ironic$",
+    "Trigger": "(^!plagueis$)|^ironic",
     "Regex": {},
     "Responses":[
       {
@@ -186,7 +186,7 @@
     "Embeds":  null,
     "Reactions": null,
     "Mentions": null,
-    "Cleanup": true,
+    "Cleanup": false,
     "UserSpecific": null,
     "ServerSpecific": null
   },
