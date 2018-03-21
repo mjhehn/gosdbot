@@ -71,21 +71,24 @@ func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate)
 	if botutils.In(currentServer, config.MutedServers) { //if the message is from a muted server, and the list wasn't updated by the mute commands, return
 		return
 	}
-
-	for _, autoresponse := range config.Ars { //parse through all the json-configured responses
-		if autoresponse.ServerSpecific == nil || botutils.In(currentServer, autoresponse.ServerSpecific) {
-			go autoresponse.CheckResponses(session, message, botresponse.Textresponse, responded)
-			go autoresponse.CheckResponses(session, message, botresponse.Embedresponse, responded)
-			go autoresponse.CheckResponses(session, message, botresponse.Reactionresponse, responded)
+	if botutils.CheckWebHooks(session, message, "cleverbot") {
+		go botclever.CleverResponse(session, message, responded)
+	} else {
+		for _, autoresponse := range config.Ars { //parse through all the json-configured responses
+			if autoresponse.ServerSpecific == nil || botutils.In(currentServer, autoresponse.ServerSpecific) {
+				go autoresponse.CheckResponses(session, message, botresponse.Textresponse, responded)
+				go autoresponse.CheckResponses(session, message, botresponse.Embedresponse, responded)
+				go autoresponse.CheckResponses(session, message, botresponse.Reactionresponse, responded)
+			}
 		}
+		go notJustTheMen(session, message, responded)
+		go diceRoller(session, message, responded)
+		go compliment(session, message, responded)
+		go delete(session, message, responded)
+		go cleanup(session, message, responded)
+		go botstatus(session, message, responded)
 	}
-	go notJustTheMen(session, message, responded)
-	go diceRoller(session, message, responded)
-	go compliment(session, message, responded)
-	go delete(session, message, responded)
-	go cleanup(session, message, responded)
-	go botstatus(session, message, responded)
-	go botclever.CleverResponse(session, message, responded)
+
 	<-responded //to synchronize back up with the coroutines
 	close(responded)
 }
