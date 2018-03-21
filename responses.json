@@ -207,7 +207,7 @@
     "ServerSpecific": null
   },
   {
-    "Trigger": "magedere",
+    "Trigger": "folgers",
     "Regex": {},
     "Responses":[
       {"Chance": 8, "Text":"Folgers - Freshly roasted every day and shipped to you a year later."},
@@ -263,7 +263,6 @@
     "Cleanup": false,
     "UserSpecific": [
       "Magery",
-      "Ranth"
     ],
     "ServerSpecific": [
       "The Semi-Decent Establishment",
