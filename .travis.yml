@@ -1,0 +1,8 @@
+language: Go
+  go:
+    - "1.10"
+    - master
+
+  install:
+    - "github.com/bwmarrin/discordgo"
+    - "github.com/CleverbotIO/go-cleverbot.io"
