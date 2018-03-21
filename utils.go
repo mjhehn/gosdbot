@@ -72,7 +72,7 @@ func GetGuild(session *discordgo.Session, msg *discordgo.MessageCreate) *discord
 	return guild
 }
 
-//GetRoles retreives the roles of a user based on the message the sent+the current session
+//GetRoles retrieves the roles of a user based on the message the sent+the current session
 func GetRoles(session *discordgo.Session, msg *discordgo.MessageCreate) []string {
 	currentGuild := GetGuild(session, msg)
 
@@ -98,7 +98,7 @@ func In(s string, list []string) bool {
 	return false
 }
 
-//GetEmoji retreives server emoji by name if it exists.
+//GetEmoji retrieves server emoji by name if it exists.
 func GetEmoji(session *discordgo.Session, msg *discordgo.MessageCreate, name string) *discordgo.Emoji {
 	guild := GetGuild(session, msg)
 	guildEmojis := guild.Emojis

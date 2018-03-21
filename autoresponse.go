@@ -30,7 +30,7 @@ type AutoResponse struct {
 	Reactions      []*ReactionResponse //list of reactions possible to reply with
 	Mentions       []string            //list of mentions. currently only works with self-mentions
 	Cleanup        bool                //whether the bot should delete the message that invoked the responses
-	UserSpecific   []string            //list of users teh autoresponse should run for
+	UserSpecific   []string            //list of users the autoresponse should run for
 	ServerSpecific []string            //list of servers the autoresponse can run on
 }
 
