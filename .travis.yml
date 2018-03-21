@@ -27,12 +27,6 @@ matrix:
 notifications:
   email: false
 
-# Anything in before_script that returns a nonzero exit code will
-# flunk the build and immediately stop. It's sorta like having
-# set -e enabled in bash. 
-before_script:
-  - go get github.com/bwmarrin/discordgo #actual dependencies of the app
-  - go get github.com/CleverbotIO/go-cleverbot.io
 # script always run to completion (set +e). All of these code checks are must haves
 # in a modern Go project.
 script:
