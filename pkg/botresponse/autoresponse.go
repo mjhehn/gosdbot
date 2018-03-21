@@ -59,7 +59,6 @@ func NewAutoResponse(Trigger string, Responses []*TextResponse, Embeds []*EmbedR
 //a bool channel to note when a goroutine has made an answer.
 func (a *AutoResponse) CheckResponses(session *discordgo.Session, message *discordgo.MessageCreate, checkType int, responded chan bool) {
 	var selectedResponse respondable
-	var responses []respondable
 
 	defer func() { //handle failure due to closed channel
 		if r := recover(); r != nil {
@@ -67,21 +66,7 @@ func (a *AutoResponse) CheckResponses(session *discordgo.Session, message *disco
 		}
 	}()
 
-	switch checkType { //switch depending on what type of responses we're checking. integers with constants.
-	case Textresponse:
-		for _, r := range a.Responses {
-			responses = append(responses, r)
-		}
-	case Embedresponse:
-		for _, r := range a.Embeds {
-			responses = append(responses, r)
-		}
-	case Reactionresponse:
-		for _, r := range a.Reactions {
-			responses = append(responses, r)
-		}
-		return
-	}
+	responses := a.getRespondables(checkType) //get the reponse type list/slice
 
 	//if this is user specific, and the message author isn't in that list
 	if a.UserSpecific != nil && !botutils.In(message.Author.Username, a.UserSpecific) {
@@ -95,7 +80,7 @@ func (a *AutoResponse) CheckResponses(session *discordgo.Session, message *disco
 			}
 		}
 		if selectedResponse != nil { //check that we got a response
-			if a.Cleanup { //check if this response is supposed to delete teh command message
+			if a.Cleanup { //check if this response is supposed to delete the command message
 				session.ChannelMessageDelete(message.ChannelID, message.ID)
 			}
 			a.addReactions(session, message)                                    //add reactions, if any.
@@ -104,6 +89,25 @@ func (a *AutoResponse) CheckResponses(session *discordgo.Session, message *disco
 		return
 	}
 	return
+}
+
+func (a *AutoResponse) getRespondables(checkType int) []respondable {
+	var responses []respondable
+	switch checkType { //switch depending on what type of responses we're checking. integers with constants.
+	case Textresponse:
+		for _, r := range a.Responses {
+			responses = append(responses, r)
+		}
+	case Embedresponse:
+		for _, r := range a.Embeds {
+			responses = append(responses, r)
+		}
+	case Reactionresponse:
+		for _, r := range a.Reactions {
+			responses = append(responses, r)
+		}
+	}
+	return responses
 }
 
 //addReactions adds relevant reaction items to a message.

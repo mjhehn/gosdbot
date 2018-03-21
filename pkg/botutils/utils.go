@@ -39,7 +39,7 @@ func RunIt(chance int) bool {
 	return false
 }
 
-//GetServer retreive the guild/server by name from the current message and session
+//GetServer retrieve the guild/server by name from the current message and session
 func GetServer(session *discordgo.Session, msg *discordgo.MessageCreate) string {
 	guild := GetGuild(session, msg)
 	if guild != nil {
@@ -48,7 +48,7 @@ func GetServer(session *discordgo.Session, msg *discordgo.MessageCreate) string 
 	return ""
 }
 
-//GetGuild retreive the actual server/guild object
+//GetGuild retrieve the actual server/guild object
 func GetGuild(session *discordgo.Session, msg *discordgo.MessageCreate) *discordgo.Guild {
 	channel, err := session.State.Channel(msg.ChannelID)
 	if err != nil {
