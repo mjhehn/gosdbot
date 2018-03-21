@@ -23,12 +23,8 @@ matrix:
 notifications:
   email: false
 
-install:
-  - go get -u "github.com/bwmarrin/discordgo"
-  - go get -u "github.com/CleverbotIO/go-cleverbot.io"
-
 # script always run to completion (set +e). All of these code checks are must haves
 # in a modern Go project.
 script:
-  - pwd
-  - go test -v -race gosdbot                # Run all the tests with the race detector enabled
+  - export GOPATH=$GOPATH/
+  - go test -v -race ./..         # Run all the tests with the race detector enabled
