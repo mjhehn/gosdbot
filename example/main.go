@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	gosdbot "github.com/mjhehn/semi-decent-bot"
+	gosdbot "github.com/mjhehn/gosdbot"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -18,7 +18,13 @@ func init() {
 	config.Ars = gosdbot.ReadFromJSON()
 }
 
+func configFromEnv() {
+	config.OwnerID = os.Getenv("ownerid")
+	config.Token = os.Getenv("token")
+}
+
 func main() {
+	configFromEnv()
 	discord, err := discordgo.New("Bot " + config.Token)
 	if err != nil {
 		fmt.Println("error creating Discord session,", err)
