@@ -30,5 +30,5 @@ install:
 # script always run to completion (set +e). All of these code checks are must haves
 # in a modern Go project.
 script:
-  - cd $HOME/gopath/src/github.com/mjhehn/gosdbot
+  - export GOPATH=gopath/mjhehn
   - go test -v -race gosdbot                   # Run all the tests with the race detector enabled
