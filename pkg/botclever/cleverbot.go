@@ -1,7 +1,7 @@
 package botclever
 
 import (
-	"sdbot/pkg/botutils"
+	"semi-decent-bot/pkg/botutils"
 
 	cleverbot "github.com/CleverbotIO/go-cleverbot.io"
 	"github.com/bwmarrin/discordgo"

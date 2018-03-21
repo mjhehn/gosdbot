@@ -1,7 +1,7 @@
 package botresponse
 
 import (
-	"sdbot/pkg/botutils"
+	"semi-decent-bot/pkg/botutils"
 
 	"github.com/bwmarrin/discordgo"
 )

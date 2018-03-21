@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"regexp"
-	"sdbot/pkg/botutils"
+	"semi-decent-bot/pkg/botutils"
 
 	"github.com/bwmarrin/discordgo"
 )

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"math/big"
 	"regexp"
-	"sdbot/pkg/botutils"
+	"semi-decent-bot/pkg/botutils"
 	"strconv"
 	"strings"
 

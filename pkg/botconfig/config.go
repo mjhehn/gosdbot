@@ -3,8 +3,8 @@ package botconfig
 import (
 	"encoding/json"
 	"io/ioutil"
-	"sdbot/pkg/botresponse"
-	"sdbot/pkg/botutils"
+	"semi-decent-bot/pkg/botresponse"
+	"semi-decent-bot/pkg/botutils"
 )
 
 //Config is a wrapper for the autoresposnses and mutedServers objects needed by the bot

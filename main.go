@@ -7,11 +7,12 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"sdbot/pkg/botclever"
-	"sdbot/pkg/botconfig"
-	"sdbot/pkg/botresponse"
-	"sdbot/pkg/botutils"
 	"syscall"
+
+	"semi-decent-bot/pkg/botclever"
+	"semi-decent-bot/pkg/botconfig"
+	"semi-decent-bot/pkg/botresponse"
+	"semi-decent-bot/pkg/botutils"
 
 	"github.com/bwmarrin/discordgo"
 )
