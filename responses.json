@@ -130,6 +130,67 @@
     "ServerSpecific": null
   },
   {
+    "Trigger": "^[hH]ello there[.!]*$",
+    "Regex": {},
+    "Responses": [
+      {
+        "Chance":1,
+        "Text":"General Kenobi!"
+      }
+    ],
+    "Embeds":  [
+      {
+        "Chance": 8,
+        "URL": "https://i.redd.it/c3ivc16msdl01.jpg"
+      },
+      {
+        "Chance": 8,
+        "URL": "https://i.redd.it/frim6elh4fl01.jpg"
+      },
+      {
+        "Chance": 8,
+        "URL": "https://i.redd.it/bnhepz3v8mh01.jpg"
+      }
+    ],
+    "Reactions": null,
+    "Mentions": null,
+    "Cleanup": false,
+    "UserSpecific": null,
+    "ServerSpecific": null
+  },
+  {
+    "Trigger": "^!simulations$",
+    "Regex": {},
+    "Responses":null,
+    "Embeds":  [
+      {
+        "Chance": 1,
+        "URL": "https://i.ytimg.com/vi/Oa-fPNlSrrY/maxresdefault.jpg"
+      }
+    ],
+    "Reactions": null,
+    "Mentions": null,
+    "Cleanup": true,
+    "UserSpecific": null,
+    "ServerSpecific": null
+  },
+  {
+    "Trigger": "(^!plagueis$)|^ironic$",
+    "Regex": {},
+    "Responses":[
+      {
+        "Chance": 1,
+        "Text": "Did you ever hear the tragedy of Darth Plagueis the wise? I thought not. It's not a story the Jedi would tell you. It's a Sith legend. Darth Plagueis was a Dark Lord of the Sith, so powerful and so wise he could use the Force to influence the midichlorians to create life... He had such a knowledge of the dark side that he could even keep the ones he cared about from dying. The dark side of the Force is a pathway to many abilities some consider to be unnatural. He became so powerful... the only thing he was afraid of was losing his power, which eventually, of course, he did. Unfortunately, he taught his apprentice everything he knew, then his apprentice killed him in his sleep. Ironic, he could save others from death, but not himself."
+      }
+    ],
+    "Embeds":  null,
+    "Reactions": null,
+    "Mentions": null,
+    "Cleanup": true,
+    "UserSpecific": null,
+    "ServerSpecific": null
+  },
+  {
     "Trigger": "sand",
     "Regex": {},
     "Responses":[
@@ -177,6 +238,33 @@
     "Mentions": null,
     "Cleanup": false,
     "UserSpecific":null,
+    "ServerSpecific": [
+      "The Semi-Decent Establishment",
+      "SemiDecentBotTesting"
+    ]
+  },
+  {
+    "Trigger": "lewd",
+    "Regex": {},
+    "Responses":[
+      {
+        "Chance":1,
+        "Text": "EXCUSE ME?! Magery!? you told me you were a PURE and INNOCENT MAIDEN OF LOVE!"
+      }
+    ],
+    "Embeds":[
+      {
+        "Chance":1,
+        "URL":"https://cdn.discordapp.com/attachments/408877169536794644/421483744994787348/unknown-1.png"
+      }
+    ],
+    "Reactions": null,
+    "Mentions": null,
+    "Cleanup": false,
+    "UserSpecific": [
+      "Magery",
+      "Ranth"
+    ],
     "ServerSpecific": [
       "The Semi-Decent Establishment",
       "SemiDecentBotTesting"
@@ -278,6 +366,82 @@
     "UserSpecific": null,
     "ServerSpecific": [
       "The Semi-Decent Establishment",
+      "SemiDecentBotTesting"
+    ]
+  },
+  {
+    "Trigger": "^HOH$",
+    "Regex": {},
+    "Responses":[
+      {
+        "Chance": 1,
+        "Text": "HOH"
+      }
+    ],
+    "Embeds":  null,
+    "Reactions": null,
+    "Mentions": null,
+    "Cleanup": false,
+    "UserSpecific": null,
+    "ServerSpecific": [
+      "The Disturbed",
+      "SemiDecentBotTesting"
+    ]
+  },
+  {
+    "Trigger": "legs",
+    "Regex": {},
+    "Responses":[
+      {
+        "Chance": 3,
+        "Text": "We need them legs for bicycle girl."
+      }
+    ],
+    "Embeds":  null,
+    "Reactions": null,
+    "Mentions": null,
+    "Cleanup": false,
+    "UserSpecific": null,
+    "ServerSpecific": [
+      "The Disturbed",
+      "SemiDecentBotTesting"
+    ]
+  },
+  {
+    "Trigger": "purple",
+    "Regex": {},
+    "Responses":[
+      {
+        "Chance": 3,
+        "Text": "Purple? Where? Who? Show me! Give me!"
+      }
+    ],
+    "Embeds":  null,
+    "Reactions": null,
+    "Mentions": null,
+    "Cleanup": false,
+    "UserSpecific": null,
+    "ServerSpecific": [
+      "The Disturbed",
+      "SemiDecentBotTesting"
+    ]
+  },
+  {
+    "Trigger": "chocolate",
+    "Regex": {},
+    "Responses":null,
+    "Embeds":  [
+      {
+        "Chance": 3,
+        "URL": "https://media.giphy.com/media/OuYAexVlOCSNW/giphy.gif"
+      } 
+    ],
+    "Reactions": null,
+    "Mentions": null,
+    "Cleanup": false,
+    "UserSpecific": null,
+    "ServerSpecific": [
+      "The Disturbed",
       "SemiDecentBotTesting"
     ]
   },
