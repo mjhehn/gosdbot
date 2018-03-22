@@ -1,4 +1,4 @@
-[![GoDoc](https://godoc.org/github.com/mjhehn/gosdbot?status.svg)](https://godoc.org/github.com/mjhehn/gosdbot) [![Go Report Card](https://goreportcard.com/badge/github.com/mjhehn/gosdbot](https://goreportcard.com/report/github.com/mjhehn/gosdbot) [![Build Status](https://travis-ci.org/mjhehn/gosdbot.svg?branch=master)](https://travis-ci.org/mjhehn/gosdbot)
+[![GoDoc](https://godoc.org/github.com/mjhehn/gosdbot?status.svg)](https://godoc.org/github.com/mjhehn/gosdbot) [![Go Report Card](https://goreportcard.com/badge/github.com/mjhehn/gosdbot)](https://goreportcard.com/report/github.com/mjhehn/gosdbot) [![Build Status](https://travis-ci.org/mjhehn/gosdbot.svg?branch=master)](https://travis-ci.org/mjhehn/gosdbot)
 # SDBot
 SDBot is a package with a few utilities and the code to spin up fairly simple Discord bot written in the Go. Simply stripping the current main.go file out and running it as-is with a responses.json file customized as per the template or example file can get you up and running in no time!
 
