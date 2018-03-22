@@ -1,3 +1,5 @@
+/*Package gosdbot acts as an extension of the discord api by implementing some helper methods and additional functions potentially useful for a go discord bot.
+ */
 package gosdbot
 
 import (
@@ -64,7 +66,7 @@ func (a *AutoResponse) CheckResponses(session *discordgo.Session, message *disco
 		}
 	}()
 
-	responses := a.getRespondables(checkType) //get the reponse type list/slice
+	responses := a.getRespondables(checkType) //get the response type list/slice
 
 	//if this is user specific, and the message author isn't in that list
 	if a.UserSpecific != nil && !In(message.Author.Username, a.UserSpecific) {
