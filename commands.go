@@ -28,7 +28,7 @@ func DiceRoller(session *discordgo.Session, message *discordgo.MessageCreate, re
 		var rollString string
 		var rollTotal int64
 		for i := int64(0); i < numDice; i++ {
-			rolledDie := RollDie(numFaces)
+			rolledDie := rollDie(numFaces)
 			rollTotal += rolledDie
 			if len(rollString) > 0 {
 				rollString = rollString + " + " + strconv.FormatInt(rolledDie, 10)
@@ -60,7 +60,7 @@ func Compliment(session *discordgo.Session, message *discordgo.MessageCreate, re
 		err2 := GetJSON("https://spreadsheets.google.com/feeds/list/1eEa2ra2yHBXVZ_ctH4J15tFSGEu-VTSunsrvaCAV598/od6/public/values?alt=json", &data)
 		Check(err2)
 		numOptions := len(data["feed"].(map[string]interface{})["entry"].([]interface{})) //get the list of possible 'compliments
-		selection := RollDie(int64(numOptions))
+		selection := rollDie(int64(numOptions))
 
 		//aaaaand the following line makes me feel sick.
 		complimentText := (data["feed"].(map[string]interface{})["entry"].([]interface{})[selection].(map[string]interface{})["title"].(map[string]interface{})["$t"])
@@ -158,8 +158,8 @@ func NotJustTheMen(session *discordgo.Session, message *discordgo.MessageCreate,
 	}
 }
 
-//RollDie 'rolls a die', but more important is a bounded number generator from 1-numFaces
-func RollDie(numFaces int64) int64 {
+//rollDie 'rolls a die', but more important is a bounded number generator from 1-numFaces
+func rollDie(numFaces int64) int64 {
 	rnged, err := rand.Int(rand.Reader, big.NewInt(numFaces))
 	Check(err)
 	return rnged.Int64() + 1
