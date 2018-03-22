@@ -9,9 +9,6 @@ SDBot is a package with a few utilities and the code to spin up fairly simple Di
 This assumes you already have a working Go environment, if not please see
 [this page](https://golang.org/doc/install) first.
 
-
-`go get` *will always pull the latest released version from the master branch.*
-
 ```sh
 go get github.com/mjhehn/sdbot
 ```
