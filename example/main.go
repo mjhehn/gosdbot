@@ -82,7 +82,7 @@ func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate)
 		return
 	}
 	if gosdbot.CheckWebHooks(session, message, "cleverbot") {
-		go gosdbot.CleverResponse(session, message, responded)
+		go gosdbot.CleverResponse(session, message, responded, clvrbot)
 	} else {
 		for _, autoresponse := range config.Ars { //parse through all the json-configured responses
 			if autoresponse.ServerSpecific == nil || gosdbot.In(currentServer, autoresponse.ServerSpecific) {
