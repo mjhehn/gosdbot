@@ -6,21 +6,29 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/CleverbotIO/go-cleverbot.io"
+
 	gosdbot "github.com/mjhehn/gosdbot"
 
 	"github.com/bwmarrin/discordgo"
 )
 
 var config *gosdbot.Config //config global object
+var clvrbot *cleverbot.Session
 
 func init() {
 	config = gosdbot.ConfigFromJSON() //build the config file
 	config.Ars = gosdbot.ReadFromJSON()
+	var err error
+	clvrbot, err = cleverbot.New(config.CleverUser, config.CleverID)
+	gosdbot.Check(err)
 }
 
 func configFromEnv() {
 	config.OwnerID = os.Getenv("ownerid")
 	config.Token = os.Getenv("token")
+	config.CleverID = os.Getenv("clevtoken")
+	config.CleverUser = os.Getenv("clevowner")
 }
 
 func main() {
@@ -74,7 +82,7 @@ func messageCreate(session *discordgo.Session, message *discordgo.MessageCreate)
 		return
 	}
 	if gosdbot.CheckWebHooks(session, message, "cleverbot") {
-		go gosdbot.CleverResponse(session, message, responded)
+		go gosdbot.CleverResponse(session, message, responded, clvrbot)
 	} else {
 		for _, autoresponse := range config.Ars { //parse through all the json-configured responses
 			if autoresponse.ServerSpecific == nil || gosdbot.In(currentServer, autoresponse.ServerSpecific) {

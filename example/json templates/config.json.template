@@ -2,4 +2,6 @@
     "Token":"bottoken",
     "Status":"botstatus",
     "OwnerID":"ownerID"
+    "CleverID":"cleverbot.io api key",
+    "CleverUser":"cleverbot.io api user"
 }

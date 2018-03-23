@@ -16,13 +16,17 @@ type Config struct {
 	Token        string
 	Status       string
 	OwnerID      string
+	CleverUser   string
+	CleverID     string
 }
 
 //ConfigJSON is a JSON serializeable struct to use to set Config via json parsing
 type ConfigJSON struct {
-	Token   string
-	Status  string
-	OwnerID string
+	Token      string
+	Status     string
+	OwnerID    string
+	CleverUser string
+	CleverID   string
 }
 
 //NewConfig is a server cstor
@@ -33,6 +37,8 @@ func NewConfig() *Config {
 	sc.Token = "bottokengoeshere"
 	sc.Status = "default!"
 	sc.OwnerID = "0"
+	sc.CleverID = "0"
+	sc.CleverUser = "0"
 	return sc
 }
 
@@ -43,7 +49,9 @@ func NewConfigByToken(token string) *Config {
 	sc.MutedServers = []string{}
 	sc.Token = token
 	sc.Status = "default!"
-	sc.OwnerID = "0" //fill owner ID here
+	sc.OwnerID = "0"
+	sc.CleverID = "0"
+	sc.CleverUser = "0"
 	return sc
 }
 
@@ -61,6 +69,8 @@ func ConfigFromJSON() *Config {
 	c.OwnerID = data.OwnerID
 	c.Token = data.Token
 	c.Status = data.Status
+	c.CleverID = data.CleverID
+	c.CleverUser = data.CleverUser
 	return c
 }
 
