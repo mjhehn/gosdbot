@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -147,6 +148,26 @@ func (c *Config) Botstatus(session *discordgo.Session, message *discordgo.Messag
 			c.Status = message.Content[8:]
 			session.UpdateStatus(0, c.Status)
 			session.ChannelMessageDelete(message.ChannelID, message.ID)
+			responded <- true
+			return
+		}
+	}
+	return
+}
+
+//LeaveServer removes the bot from the guildID given to it if the user making the request is an admin
+func (c *Config) LeaveServer(session *discordgo.Session, message *discordgo.MessageCreate, responded chan bool) {
+	expr, err := regexp.Compile("^!leave [0-9]*$")
+	Check(err)
+
+	//mute
+	if expr.MatchString(message.Content) {
+		currentServer := GetServer(session, message)
+		currentRoles := GetRoles(session, message)
+		if !In(currentServer, c.MutedServers) && In("Bot Admin", currentRoles) { //mute
+			guildID := strings.Split(message.Content, " ")
+			err := session.GuildLeave(guildID[1])
+			Check(err)
 			responded <- true
 			return
 		}
